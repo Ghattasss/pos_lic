@@ -170,7 +170,14 @@
       </div>
       <div class="alert alert-success" id="successMsg">
         <span style="font-size:18px">✅</span>
-        <span>تم إنشاء الترخيص! احفظ الملفين في نفس مجلد المشروع ثم افتح التطبيق.</span>
+        <div>
+          <div style="font-weight:800;margin-bottom:4px">تم إنشاء الترخيص بنجاح!</div>
+          <div style="font-size:12px;line-height:1.8">
+            • الترخيص مربوط بـ <strong>هذا الجهاز</strong> (Hardware) — يعمل على كل المتصفحات<br>
+            • افتح البرنامج الأساسي في <strong>نفس المتصفح</strong> مباشرةً<br>
+            • لفتحه في متصفح آخر: انسخ ملف <strong>license.key</strong> وافتحه في البرنامج الأساسي
+          </div>
+        </div>
       </div>
       <button class="btn btn-gray" onclick="_downloadFiles()" style="margin-top:10px">
         💾 تحميل license.key و device.id
@@ -179,6 +186,45 @@
   </div>
 
   <div class="badge">🔒 AES-256-GCM · SHA-256 · PBKDF2 · Expiry · Anti-Time-Tamper</div>
+
+  <!-- زر فتح أداة فك القفل -->
+  <div style="margin-top:18px;text-align:center">
+    <button onclick="document.getElementById('unlockTool').style.display=document.getElementById('unlockTool').style.display==='none'?'block':'none'"
+      style="background:none;border:1px dashed #334155;border-radius:10px;color:#475569;font-family:Cairo,sans-serif;font-size:12px;padding:8px 20px;cursor:pointer;width:100%">
+      🔓 فك قفل التلاعب بالتاريخ
+    </button>
+  </div>
+
+  <!-- أداة فك القفل -->
+  <div id="unlockTool" style="display:none;margin-top:14px;background:#0d1117;border:1px solid rgba(245,158,11,0.3);border-radius:14px;padding:20px">
+    <div style="text-align:center;margin-bottom:14px">
+      <div style="font-size:30px">🔓</div>
+      <div style="font-size:13px;font-weight:800;color:#f59e0b;margin-top:6px">فك قفل النظام</div>
+      <div style="font-size:11px;color:#64748b;margin-top:4px">للاستخدام بعد اكتشاف تعديل على التاريخ</div>
+    </div>
+    <div class="form-group">
+      <label>كلمة مرور صاحب النظام</label>
+      <div class="input-wrap">
+        <input type="password" id="unlockPass" placeholder="أدخل كلمة المرور..." autocomplete="off"
+          onkeydown="if(event.key==='Enter')_unlockStep1()">
+        <button class="eye-btn" id="eyeUnlock" onclick="_togglePass('unlockPass','eyeUnlock')">👁️</button>
+      </div>
+    </div>
+    <div class="form-group" id="unlockSecGroup" style="display:none">
+      <label>تاريخ ميلادك امتى؟</label>
+      <div class="input-wrap">
+        <input type="password" id="unlockSec" placeholder="الإجابة..." autocomplete="off"
+          onkeydown="if(event.key==='Enter')_unlockStep2()">
+        <button class="eye-btn" id="eyeUnlockSec" onclick="_togglePass('unlockSec','eyeUnlockSec')">👁️</button>
+      </div>
+    </div>
+    <button class="btn btn-blue" id="unlockBtn" onclick="_unlockStep1()" style="margin-top:4px">التحقق ←</button>
+    <div class="alert alert-error" id="unlockErr" style="margin-top:10px"></div>
+    <div class="alert alert-success" id="unlockSuccess" style="margin-top:10px;display:none">
+      <span style="font-size:18px">✅</span>
+      <div style="font-weight:800">تم فك القفل بنجاح — يمكن تشغيل البرنامج الآن</div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -202,31 +248,44 @@ let _deviceId = null;
 // FINGERPRINT
 // ══════════════════════════════════════════════════════════════
 async function _getFingerprint() {
+  // ══ Hardware-only fingerprint — لا يتغير بتغيير المتصفح ══
+  // بيعتمد فقط على خصائص الجهاز الحقيقية مش المتصفح
   const gl = (()=>{
     try {
       const c=document.createElement('canvas'),g=c.getContext('webgl')||c.getContext('experimental-webgl');
       if(!g) return 'NO_GL';
       const d=g.getExtension('WEBGL_debug_renderer_info');
+      // UNMASKED_RENDERER = اسم GPU الحقيقي — ثابت بغض النظر عن المتصفح
       return d?(g.getParameter(d.UNMASKED_VENDOR_WEBGL)+'|'+g.getParameter(d.UNMASKED_RENDERER_WEBGL)):g.getParameter(g.RENDERER);
     } catch(e){return'GL_ERR';}
   })();
+  // Canvas fingerprint بخط ثابت — نتيجته تعتمد على GPU driver مش المتصفح
   const c2d=(()=>{
     try{
-      const c=document.createElement('canvas');c.width=200;c.height=50;
-      const x=c.getContext('2d');x.font='14px Arial';x.fillStyle='#f60';
-      x.fillText('POS-FP-2026',10,30);x.fillStyle='#069';x.fillRect(50,5,80,20);
-      return c.toDataURL().slice(-60);
+      const c=document.createElement('canvas');c.width=280;c.height=60;
+      const x=c.getContext('2d');
+      x.font='bold 18px Arial';x.fillStyle='#e63';
+      x.fillText('HW-FP-POS-2026',10,35);
+      x.fillStyle='rgba(0,100,200,0.8)';x.fillRect(60,8,120,22);
+      x.font='11px monospace';x.fillStyle='#1a1';
+      x.fillText('GPU-RENDER-TEST',62,24);
+      return c.toDataURL('image/png').slice(-80);
     }catch(e){return'C2D_ERR';}
   })();
   const comp=[
-    navigator.platform||'', navigator.userAgent||'',
-    navigator.language||'', (navigator.languages||[]).join(','),
-    screen.width+'x'+screen.height, screen.colorDepth+'',
-    new Date().getTimezoneOffset()+'',
-    Intl.DateTimeFormat().resolvedOptions().timeZone||'',
-    (navigator.deviceMemory||'')+'', (navigator.hardwareConcurrency||'')+'',
-    gl, c2d, navigator.cookieEnabled+'',
-    (typeof navigator.maxTouchPoints!=='undefined'?navigator.maxTouchPoints:'')+'',
+    // ✅ Hardware — ثابت على كل المتصفحات
+    screen.width+'x'+screen.height,          // دقة الشاشة الحقيقية
+    screen.colorDepth+'',                     // عمق اللون (hardware)
+    (navigator.hardwareConcurrency||'')+'',   // عدد أنوية CPU
+    (navigator.deviceMemory||'')+'',          // حجم RAM (يُرجع قيمة مقرّبة)
+    new Date().getTimezoneOffset()+'',        // timezone offset (إعداد نظام)
+    Intl.DateTimeFormat().resolvedOptions().timeZone||'', // timezone name
+    gl,                                       // GPU vendor + renderer
+    c2d,                                      // Canvas GPU rendering
+    // ✅ Platform — ثابت نسبياً (Win32, Linux, MacIntel...)
+    navigator.platform||'',
+    // ✅ اللغة الافتراضية للنظام — مش للمتصفح
+    navigator.language||'',
   ];
   const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(comp.join('||')));
   const id=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase().slice(0,32);
@@ -262,8 +321,8 @@ async function _sha(str) {
 // ══════════════════════════════════════════════════════════════
 // UI
 // ══════════════════════════════════════════════════════════════
-const LABELS=['نظام التشغيل','المتصفح','اللغة','اللغات','دقة الشاشة','عمق اللون',
-  'TZ Offset','المنطقة الزمنية','ذاكرة الجهاز','عدد الأنوية','GPU (WebGL)','Canvas FP','Cookies','Touch Points'];
+const LABELS=['دقة الشاشة','عمق اللون','عدد الأنوية (CPU)','ذاكرة RAM',
+  'TZ Offset','المنطقة الزمنية','GPU (WebGL)','Canvas GPU FP','نظام التشغيل','لغة النظام'];
 
 function _renderFP(fp) {
   document.getElementById('fpGrid').innerHTML=fp.comp.map((v,i)=>`
@@ -411,9 +470,9 @@ async function _generateLicense() {
     localStorage.removeItem('pos_last_run_ts');
     localStorage.removeItem('pos_last_run_date');
 
-    // ── حفظ الترخيص الجديد ──
+    // ── حفظ الترخيص الجديد (Hardware ID = ثابت على كل المتصفحات) ──
     localStorage.setItem('pos_license_key', encrypted);
-    localStorage.setItem('pos_device_id', _deviceId);
+    localStorage.setItem('pos_device_id', _deviceId); // hardware-based ID
 
     document.getElementById('licenseKeyContent').value = encrypted;
     document.getElementById('deviceIdContent').value   = _deviceId;
@@ -442,6 +501,47 @@ function _downloadFiles() {
 // ══════════════════════════════════════════════════════════════
 // SECURITY
 // ══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+// UNLOCK TOOL — فك قفل التلاعب بالتاريخ
+// ══════════════════════════════════════════════════════════════
+let _unlockPassOk = false;
+
+async function _unlockStep1() {
+  const val = document.getElementById('unlockPass').value.trim();
+  const err = document.getElementById('unlockErr');
+  if (!val) { err.textContent = 'الرجاء إدخال كلمة المرور'; err.style.display='block'; return; }
+  if (await _sha(val+'|POS-SALT-OWNER') !== await _sha(_C.P+'|POS-SALT-OWNER')) {
+    err.textContent = '❌ كلمة المرور غير صحيحة'; err.style.display='block';
+    document.getElementById('unlockPass').value=''; return;
+  }
+  err.style.display='none';
+  _unlockPassOk = true;
+  document.getElementById('unlockSecGroup').style.display='block';
+  document.getElementById('unlockBtn').textContent = 'فك القفل ✓';
+  document.getElementById('unlockBtn').onclick = _unlockStep2;
+  document.getElementById('unlockSec').focus();
+}
+
+async function _unlockStep2() {
+  const norm = s => s.trim().replace(/\s+/g,'').toLowerCase();
+  const val  = norm(document.getElementById('unlockSec').value);
+  const err  = document.getElementById('unlockErr');
+  if (!_unlockPassOk) { err.textContent='ادخل كلمة المرور أولاً'; err.style.display='block'; return; }
+  if (!val) { err.textContent='الرجاء إدخال الإجابة'; err.style.display='block'; return; }
+  if (await _sha(val+'|POS-SALT-OWNER') !== await _sha(norm(_C.Q)+'|POS-SALT-OWNER')) {
+    err.textContent = '❌ إجابة خاطئة'; err.style.display='block';
+    document.getElementById('unlockSec').value=''; return;
+  }
+  err.style.display='none';
+  // ── فك القفل — امسح كل مفاتيح القفل والـ timestamps ──
+  ['pos_time_locked','pos_last_run_ts','pos_session_ref','pos_cache_tick','pos_run_count'].forEach(k=>localStorage.removeItem(k));
+  document.getElementById('unlockBtn').style.display='none';
+  document.getElementById('unlockSuccess').style.display='flex';
+  document.getElementById('unlockPass').value='';
+  document.getElementById('unlockSec').value='';
+  _unlockPassOk = false;
+}
+
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('keydown',e=>{
   if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key.toUpperCase()))||(e.ctrlKey&&e.key.toUpperCase()==='U'))

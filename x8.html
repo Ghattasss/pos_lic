@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>نقطة البيع - POS Pro v2</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&family=Almarai:wght@300;400;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <style>
 :root {
@@ -1143,6 +1143,10 @@ body.kiosk .main-content > *{padding-right:calc(180px + 20px)!important}
                 </div>
                 <div style="display:flex;gap:5px;flex-shrink:0;margin-right:8px">
                   <button onclick="exportStatementPDF()" title="تصدير PDF" style="background:rgba(255,255,255,0.18);border:none;border-radius:6px;width:26px;height:26px;cursor:pointer;color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center">📄</button>
+                  <button onclick="sendCustWhatsapp()" title="إرسال واتساب" style="background:#25D366;border:none;border-radius:6px;padding:0 8px;height:26px;cursor:pointer;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;gap:3px">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.144 1.541 5.875L.057 23.428a.5.5 0 0 0 .611.625l5.797-1.522A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.652-.519-5.166-1.42l-.371-.22-3.844 1.009 1.028-3.75-.242-.386A9.943 9.943 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                    واتساب
+                  </button>
                   <button onclick="closeCustPanel()" title="إغلاق" style="background:rgba(255,255,255,0.18);border:none;border-radius:6px;width:26px;height:26px;cursor:pointer;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center">×</button>
                 </div>
               </div>
@@ -1263,6 +1267,10 @@ body.kiosk .main-content > *{padding-right:calc(180px + 20px)!important}
               <span style="font-weight:700;font-size:14px">سجل المشتريات</span>
               <div style="display:flex;gap:6px;align-items:center">
                 <button onclick="exportSuppPurchasesPDF()" title="تصدير PDF" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;color:var(--text);font-size:12px">📄</button>
+                <button onclick="sendSuppWhatsapp()" title="إرسال واتساب" style="background:#25D366;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;color:#fff;font-size:12px;font-weight:700">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" style="vertical-align:middle;margin-left:2px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.563 4.144 1.541 5.875L.057 23.428a.5.5 0 0 0 .611.625l5.797-1.522A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.652-.519-5.166-1.42l-.371-.22-3.844 1.009 1.028-3.75-.242-.386A9.943 9.943 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                  واتساب
+                </button>
                 <button onclick="closeSuppPanel()" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;width:26px;height:26px;cursor:pointer;color:var(--text);font-size:16px">×</button>
               </div>
             </div>
@@ -1557,6 +1565,90 @@ body.kiosk .main-content > *{padding-right:calc(180px + 20px)!important}
             </select>
           </div>
           <button class="btn btn-secondary btn-sm" onclick="printTestReceipt()">🖨️ طباعة تجريبية</button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════
+             كارت المظهر - الخط والنوافذ
+             ═══════════════════════════════════════════════════ -->
+        <div class="card" style="border:2px solid rgba(59,130,246,0.25);background:rgba(59,130,246,0.03)">
+          <div class="card-title" style="color:var(--accent2)">🎨 إعدادات المظهر</div>
+
+          <!-- نوع الخط -->
+          <div class="form-group">
+            <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">🔤 نوع الخط</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="fontFamilyGrid">
+              <div onclick="previewFont('Cairo')" id="font-Cairo"
+                style="border:2px solid var(--accent2);border-radius:10px;padding:10px 12px;cursor:pointer;text-align:center;background:rgba(59,130,246,0.1);transition:all .2s">
+                <div style="font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;color:var(--text)">القاهرة</div>
+                <div style="font-family:'Cairo',sans-serif;font-size:11px;color:var(--text3);margin-top:2px">Cairo - الافتراضي</div>
+              </div>
+              <div onclick="previewFont('Tajawal')" id="font-Tajawal"
+                style="border:2px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;text-align:center;background:var(--surface2);transition:all .2s">
+                <div style="font-family:'Tajawal',sans-serif;font-size:16px;font-weight:700;color:var(--text)">تجوال</div>
+                <div style="font-family:'Tajawal',sans-serif;font-size:11px;color:var(--text3);margin-top:2px">Tajawal</div>
+              </div>
+              <div onclick="previewFont('Almarai')" id="font-Almarai"
+                style="border:2px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;text-align:center;background:var(--surface2);transition:all .2s">
+                <div style="font-family:'Almarai',sans-serif;font-size:16px;font-weight:700;color:var(--text)">المرعى</div>
+                <div style="font-family:'Almarai',sans-serif;font-size:11px;color:var(--text3);margin-top:2px">Almarai</div>
+              </div>
+              <div onclick="previewFont('IBM Plex Sans Arabic')" id="font-IBM Plex Sans Arabic"
+                style="border:2px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;text-align:center;background:var(--surface2);transition:all .2s">
+                <div style="font-family:'IBM Plex Sans Arabic',sans-serif;font-size:16px;font-weight:700;color:var(--text)">IBM عربي</div>
+                <div style="font-family:'IBM Plex Sans Arabic',sans-serif;font-size:11px;color:var(--text3);margin-top:2px">IBM Plex</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- حجم الخط -->
+          <div class="form-group" style="margin-top:16px">
+            <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:8px">📏 حجم الخط</label>
+            <div style="display:flex;align-items:center;gap:12px">
+              <input type="range" id="sFontSize" min="11" max="18" step="1" value="13"
+                oninput="previewFontSize(this.value)"
+                style="flex:1;accent-color:var(--accent2);height:6px;cursor:pointer">
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;min-width:50px;text-align:center">
+                <span id="sFontSizeVal" style="font-weight:900;color:var(--accent2);font-size:15px">13</span>
+                <span style="font-size:10px;color:var(--text3)">px</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px;padding:0 2px">
+              <span>أصغر (11)</span><span>متوسط (13)</span><span>أكبر (18)</span>
+            </div>
+          </div>
+
+          <!-- حجم النوافذ -->
+          <div class="form-group" style="margin-top:16px">
+            <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:8px">🪟 حجم النوافذ (المودالات)</label>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="modalSizeGrid">
+              <div onclick="setModalSize('compact')" id="msize-compact"
+                style="border:2px solid var(--border);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;background:var(--surface2);transition:all .2s">
+                <div style="font-size:20px;margin-bottom:4px">🔹</div>
+                <div style="font-size:12px;font-weight:700;color:var(--text)">مضغوط</div>
+                <div style="font-size:10px;color:var(--text3)">500px</div>
+              </div>
+              <div onclick="setModalSize('normal')" id="msize-normal"
+                style="border:2px solid var(--accent2);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;background:rgba(59,130,246,0.1);transition:all .2s">
+                <div style="font-size:20px;margin-bottom:4px">🔷</div>
+                <div style="font-size:12px;font-weight:700;color:var(--text)">عادي</div>
+                <div style="font-size:10px;color:var(--text3)">680px</div>
+              </div>
+              <div onclick="setModalSize('wide')" id="msize-wide"
+                style="border:2px solid var(--border);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;background:var(--surface2);transition:all .2s">
+                <div style="font-size:20px;margin-bottom:4px">🔵</div>
+                <div style="font-size:12px;font-weight:700;color:var(--text)">واسع</div>
+                <div style="font-size:10px;color:var(--text3)">860px</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- معاينة -->
+          <div id="appearancePreview" style="margin-top:16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;display:none">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:6px">👁️ معاينة</div>
+            <div id="previewText" style="color:var(--text);line-height:1.6">مرحباً بك في نظام نقطة البيع — POS Pro</div>
+          </div>
+
+          <button class="btn btn-primary" style="margin-top:16px;width:100%" onclick="saveAppearanceSettings()">💾 حفظ إعدادات المظهر</button>
         </div>
 
         <!-- ADKAR SETTINGS -->
@@ -4781,6 +4873,7 @@ async function init(){
   await initDB();
   setLoading(40, 'تحميل الإعدادات...');
   await loadSettings();
+  applyAppearanceSettings();
   setLoading(70, 'تحميل البيانات...');
   await loadAllData();
   setLoading(90, 'تهيئة الأصوات...');
@@ -6670,6 +6763,48 @@ function closeCustPanel(){
   renderCustomers();
 }
 
+function formatWhatsappNumber(raw){
+  // إزالة كل غير الأرقام
+  let num = (raw||'').replace(/\D/g,'');
+  if(!num) return '';
+  // لو بيبدأ بـ 00 → شيلها وخلي الكود
+  if(num.startsWith('00')) num = num.slice(2);
+  // لو بيبدأ بـ + كان اتشال بالـ replace فوق - مش هينفع
+  // لو رقم مصري: يبدأ بـ 01 و10 أرقام → 20 + باقي الأرقام بدون الصفر
+  if(num.startsWith('01') && num.length === 11) num = '20' + num.slice(1);
+  // لو رقم سعودي: يبدأ بـ 05 و10 أرقام → 966 + باقي الأرقام بدون الصفر
+  else if(num.startsWith('05') && num.length === 10) num = '966' + num.slice(1);
+  // لو رقم إماراتي: يبدأ بـ 05 و9 أرقام → 971 + باقي بدون الصفر
+  else if(num.startsWith('05') && num.length === 9) num = '971' + num.slice(1);
+  // لو مش فيه كود دولي (أقل من 11 رقم ومش بيبدأ بكود معروف) → افتراضي مصر
+  else if(num.length <= 10 && !num.startsWith('2') && !num.startsWith('9') && !num.startsWith('1'))
+    num = '20' + num.replace(/^0/,'');
+  return num;
+}
+
+function sendCustWhatsapp(){
+  if(!currentPanelCustomerId) return;
+  const cust = allCustomers.find(c=>c.id===currentPanelCustomerId);
+  if(!cust){ toast('لم يتم تحديد عميل','warning'); return; }
+  const phone = formatWhatsappNumber(cust.phone);
+  if(!phone){ toast('العميل ليس له رقم هاتف','warning'); return; }
+  const cur = settings.currency||'ج.م';
+  const debt = parseFloat(document.getElementById('panelDebt')?.textContent||'0')||0;
+  const paid = parseFloat(document.getElementById('panelPaid')?.textContent||'0')||0;
+  const total = document.getElementById('panelTotal')?.textContent||'';
+  const store = settings.storeName||'المتجر';
+  const msg =
+`مرحباً ${cust.name} 👋
+من ${store}
+
+💰 إجمالي الفترة: ${total}
+✅ تم السداد: ${fmt(paid)} ${cur}
+🔴 المتبقي عليك: ${fmt(debt)} ${cur}
+
+نرجو السداد في أقرب وقت 🙏`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
 function setQuickPayMethod(method){
   quickPayMethod = method;
   const cashBtn = document.getElementById('qpCashBtn');
@@ -7203,27 +7338,60 @@ function closeSuppPanel(){
   renderSuppliers();
 }
 
+function sendSuppWhatsapp(){
+  if(!currentSuppId){ toast('لم يتم تحديد مورد','warning'); return; }
+  const s = allSuppliers.find(x=>x.id===currentSuppId);
+  if(!s){ toast('المورد غير موجود','warning'); return; }
+  const phone = formatWhatsappNumber(s.phone);
+  if(!phone){ toast('المورد ليس له رقم هاتف','warning'); return; }
+  const cur = settings.currency||'ج.م';
+  const debt  = parseFloat(document.getElementById('panelSuppDebt')?.textContent||'0')||0;
+  const paid  = parseFloat(document.getElementById('panelSuppPaid')?.textContent||'0')||0;
+  const total = document.getElementById('panelSuppTotal')?.textContent||'';
+  const store = settings.storeName||'المتجر';
+  const msg =
+`مرحباً ${s.name} 👋
+من ${store}
+
+🛒 إجمالي المشتريات: ${total}
+✅ تم السداد: ${fmt(paid)} ${cur}
+🔴 المتبقي علينا: ${fmt(debt)} ${cur}
+
+شكراً لتعاملكم معنا 🙏`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
 function exportSuppPurchasesPDF(){
   if(!currentSuppId) return;
   const s = allSuppliers.find(x=>x.id===currentSuppId);
   const purchases = allPurchases.filter(p=>p.supplierId===currentSuppId);
   const total = purchases.reduce((a,b)=>a+b.total,0);
   const cur = settings.currency||'ج.م';
-  const rows = [...purchases].reverse().map(p=>`<tr>
-    <td style="padding:6px 10px;border:1px solid #ddd">${h(p.number)}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${new Date(p.date).toLocaleDateString('ar')}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${p.items?.length||0} منتج</td>
-    <td style="padding:6px 10px;border:1px solid #ddd;font-weight:700">${fmt(p.total)} ${cur}</td>
-  </tr>`).join('');
-  const html = `<div style="font-family:'Cairo',sans-serif;direction:rtl;padding:30px;color:#000">
-    <h2>سجل مشتريات المورد: ${s?.name||''}</h2>
-    <p style="color:#666;margin-bottom:8px">${settings.storeName||'المتجر'} | ${new Date().toLocaleDateString('ar')}</p>
-    <p style="margin-bottom:16px;font-weight:700">إجمالي المشتريات: <span style="color:#c2410c">${fmt(total)} ${cur}</span> | ${purchases.length} فاتورة</p>
-    <table style="width:100%;border-collapse:collapse">
-      <thead><tr style="background:#fff8f0">${['رقم الفاتورة','التاريخ','عدد المنتجات','الإجمالي'].map(h=>`<th style="padding:8px;border:1px solid #ddd;text-align:right">${h}</th>`).join('')}</tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
+
+  const cards = pdfCards([
+    {label:'إجمالي المشتريات', value:`${fmt(total)} ${cur}`, color:'gold'},
+    {label:'عدد الفواتير',     value:`${purchases.length}`, color:'blue'},
+    {label:'المورد',           value:`${s?.name||'—'}`, color:'gray'},
+  ]);
+
+  const rows = [...purchases].reverse().map((p,i)=>{
+    const bg = i%2===1 ? 'background:#f8fafc;' : '';
+    return `<tr style="${bg}">
+      <td style="padding:9px 13px;font-weight:700;color:#f59e0b">${h(p.number)}</td>
+      <td style="padding:9px 13px">${new Date(p.date).toLocaleDateString('ar-EG')}</td>
+      <td style="padding:9px 13px">${p.items?.length||0} منتج</td>
+      <td style="padding:9px 13px;font-weight:800">${fmt(p.total)} ${cur}</td>
+    </tr>`;
+  }).join('');
+
+  const bodyHTML = cards +
+    `<div class="pdf-section-title">📋 فواتير المشتريات</div>` +
+    pdfTable(['رقم الفاتورة','التاريخ','عدد المنتجات','الإجمالي'], rows,
+      `<td colspan="3" style="padding:9px 13px">الإجمالي</td><td style="padding:9px 13px">${fmt(total)} ${cur}</td>`);
+
+  const html = pdfPage('🛒', `مشتريات المورد: ${s?.name||''}`,
+    [`📅 ${new Date().toLocaleDateString('ar-EG')}`, `📋 ${purchases.length} فاتورة`],
+    s?.phone ? `📞 ${s.phone}` : '', bodyHTML, `إجمالي: ${fmt(total)} ${cur}`);
   printHTML(html, `مشتريات-${s?.name||'مورد'}`);
 }
 
@@ -8417,8 +8585,10 @@ function viewPurchase(id){
     const itemCostTotal = i.qty * i.cost;
     const itemSellTotal = i.qty * sellPrice;
     const itemProfit = itemSellTotal - itemCostTotal;
+    const unitProfit = sellPrice - i.cost;
     totalProfit += itemProfit;
-    const profitColor = itemProfit >= 0 ? 'var(--accent3)' : 'var(--danger)';
+    const unitProfitColor = unitProfit >= 0 ? 'var(--accent3)' : 'var(--danger)';
+    const totalProfitColor = itemProfit >= 0 ? 'var(--accent3)' : 'var(--danger)';
     return `<tr>
       <td>${h(i.productName)}</td>
       <td style="text-align:center">${i.qty}</td>
@@ -8426,7 +8596,8 @@ function viewPurchase(id){
       <td style="text-align:center">${fmt(itemCostTotal)}</td>
       <td style="text-align:center;color:var(--accent2)">${fmt(sellPrice)}</td>
       <td style="text-align:center">${fmt(itemSellTotal)}</td>
-      <td style="text-align:center;font-weight:800;color:${profitColor}">${itemProfit>=0?'+':''}${fmt(itemProfit)}</td>
+      <td style="text-align:center;font-weight:800;color:${unitProfitColor}">${unitProfit>=0?'+':''}${fmt(unitProfit)}</td>
+      <td style="text-align:center;font-weight:800;color:${totalProfitColor}">${itemProfit>=0?'+':''}${fmt(itemProfit)}</td>
     </tr>`;
   }).join('');
 
@@ -8453,7 +8624,8 @@ function viewPurchase(id){
             <th>إجمالي الشراء</th>
             <th style="color:var(--accent2)">سعر البيع</th>
             <th>إجمالي البيع</th>
-            <th style="color:var(--accent3)">💰 الربح</th>
+            <th style="color:var(--accent3)">💰 ربح/قطعة</th>
+            <th style="color:var(--accent3)">💰 ربح إجمالي</th>
           </tr>
         </thead>
         <tbody>${itemRows}</tbody>
@@ -10178,6 +10350,137 @@ async function deleteUser(id){
 }
 
 // ============================================================
+// APPEARANCE SETTINGS - خط / حجم / نوافذ
+// ============================================================
+const MODAL_SIZES = { compact: '500px', normal: '680px', wide: '860px' };
+
+function applyAppearanceSettings(){
+  const s = settings;
+
+  // ── 1. نوع الخط ──────────────────────────────────────────
+  const font = s.fontFamily || 'Cairo';
+  const fontStack = `'${font}', sans-serif`;
+  document.documentElement.style.setProperty('--app-font', fontStack);
+  document.body.style.fontFamily = fontStack;
+  // إجبار كل العناصر تورث الخط
+  let fontStyle = document.getElementById('_appFontStyle');
+  if(!fontStyle){ fontStyle = document.createElement('style'); fontStyle.id = '_appFontStyle'; document.head.appendChild(fontStyle); }
+  fontStyle.textContent = `*, *::before, *::after { font-family: ${fontStack} !important; }`;
+
+  // ── 2. حجم الخط ──────────────────────────────────────────
+  const fs = parseInt(s.fontSize) || 13;
+  // نحسب النسب بناءً على الحجم الأساسي 13px
+  const ratio = fs / 13;
+  let sizeStyle = document.getElementById('_appSizeStyle');
+  if(!sizeStyle){ sizeStyle = document.createElement('style'); sizeStyle.id = '_appSizeStyle'; document.head.appendChild(sizeStyle); }
+  sizeStyle.textContent = `
+    body, body * { font-size: ${fs}px !important; }
+    .section-title { font-size: ${Math.round(20 * ratio)}px !important; }
+    .card-title    { font-size: ${Math.round(15 * ratio)}px !important; }
+    .stat-value    { font-size: ${Math.round(26 * ratio)}px !important; }
+    .stat-label    { font-size: ${Math.round(12 * ratio)}px !important; }
+    .nav-tab-label { font-size: ${Math.round(12 * ratio)}px !important; }
+    .nav-tab-icon  { font-size: ${Math.round(15 * ratio)}px !important; }
+    .btn           { font-size: ${Math.round(14 * ratio)}px !important; }
+    .btn-sm        { font-size: ${Math.round(13 * ratio)}px !important; }
+    .btn-xs        { font-size: ${Math.round(12 * ratio)}px !important; }
+    .data-table th { font-size: ${Math.round(12 * ratio)}px !important; }
+    .data-table td { font-size: ${Math.round(13 * ratio)}px !important; }
+    .product-name  { font-size: ${Math.round(13 * ratio)}px !important; }
+    .product-price { font-size: ${Math.round(15 * ratio)}px !important; }
+    .modal-header h2 { font-size: ${Math.round(18 * ratio)}px !important; }
+    input, select, textarea { font-size: ${Math.round(14 * ratio)}px !important; }
+  `;
+
+  // ── 3. حجم النوافذ ────────────────────────────────────────
+  const modalSizeMap = { compact: '500px', normal: '680px', wide: '860px' };
+  const ms = modalSizeMap[s.modalSize || 'normal'];
+  let modalStyle = document.getElementById('_appModalStyle');
+  if(!modalStyle){ modalStyle = document.createElement('style'); modalStyle.id = '_appModalStyle'; document.head.appendChild(modalStyle); }
+  modalStyle.textContent = `.modal { max-width: ${ms} !important; width: 95vw !important; }`;
+}
+
+function previewFont(fontName){
+  // إزالة التحديد من الكل
+  document.querySelectorAll('#fontFamilyGrid > div').forEach(el => {
+    el.style.borderColor = 'var(--border)';
+    el.style.background = 'var(--surface2)';
+  });
+  // تحديد المختار
+  const sel = document.getElementById('font-' + fontName);
+  if(sel){
+    sel.style.borderColor = 'var(--accent2)';
+    sel.style.background = 'rgba(59,130,246,0.1)';
+  }
+  // معاينة
+  const prev = document.getElementById('previewText');
+  const box  = document.getElementById('appearancePreview');
+  if(prev){ prev.style.fontFamily = `'${fontName}', sans-serif`; prev.style.fontSize = (settings.fontSize||13)+'px'; }
+  if(box) box.style.display = '';
+  settings._previewFont = fontName;
+}
+
+function previewFontSize(val){
+  document.getElementById('sFontSizeVal').textContent = val;
+  const prev = document.getElementById('previewText');
+  const box  = document.getElementById('appearancePreview');
+  if(prev){ prev.style.fontSize = val + 'px'; prev.style.fontFamily = `'${settings._previewFont || settings.fontFamily || 'Cairo'}', sans-serif`; }
+  if(box) box.style.display = '';
+}
+
+function setModalSize(size){
+  document.querySelectorAll('#modalSizeGrid > div').forEach(el => {
+    el.style.borderColor = 'var(--border)';
+    el.style.background = 'var(--surface2)';
+  });
+  const sel = document.getElementById('msize-' + size);
+  if(sel){
+    sel.style.borderColor = 'var(--accent2)';
+    sel.style.background = 'rgba(59,130,246,0.1)';
+  }
+  settings._previewModal = size;
+}
+
+function loadAppearanceUI(){
+  const font = settings.fontFamily || 'Cairo';
+  const fs   = settings.fontSize   || 13;
+  const ms   = settings.modalSize  || 'normal';
+  // خط
+  document.querySelectorAll('#fontFamilyGrid > div').forEach(el => {
+    el.style.borderColor = 'var(--border)';
+    el.style.background = 'var(--surface2)';
+  });
+  const fontEl = document.getElementById('font-' + font);
+  if(fontEl){ fontEl.style.borderColor = 'var(--accent2)'; fontEl.style.background = 'rgba(59,130,246,0.1)'; }
+  // حجم
+  const slider = document.getElementById('sFontSize');
+  const valEl  = document.getElementById('sFontSizeVal');
+  if(slider) slider.value = fs;
+  if(valEl)  valEl.textContent = fs;
+  // نوافذ
+  document.querySelectorAll('#modalSizeGrid > div').forEach(el => {
+    el.style.borderColor = 'var(--border)';
+    el.style.background = 'var(--surface2)';
+  });
+  const msEl = document.getElementById('msize-' + ms);
+  if(msEl){ msEl.style.borderColor = 'var(--accent2)'; msEl.style.background = 'rgba(59,130,246,0.1)'; }
+}
+
+async function saveAppearanceSettings(){
+  const font = settings._previewFont || settings.fontFamily || 'Cairo';
+  const fs   = parseInt(document.getElementById('sFontSize')?.value || 13);
+  const ms   = settings._previewModal || settings.modalSize || 'normal';
+  await saveSetting('fontFamily', font);
+  await saveSetting('fontSize',   fs);
+  await saveSetting('modalSize',  ms);
+  await loadSettings();
+  applyAppearanceSettings();
+  delete settings._previewFont;
+  delete settings._previewModal;
+  toast('✅ تم حفظ إعدادات المظهر', 'success');
+}
+
+// ============================================================
 // SETTINGS
 // ============================================================
 function loadSettingsUI(){
@@ -10198,6 +10501,8 @@ function loadSettingsUI(){
   BACKUP.updateCountUI();
   const last = localStorage.getItem('pos_backup_last');
   if(last) BACKUP.updateStatusUI(last);
+  // إعدادات المظهر
+  loadAppearanceUI();
 }
 
 async function saveSettings(){
@@ -11479,24 +11784,42 @@ async function deleteRefund(id){
 
 function exportRefundsPDF(){
   const cur = settings.currency||'ج.م';
-  const total = allRefunds.reduce((a,b)=>a+b.totalRefund,0);
-  const rows = [...allRefunds].reverse().map(r=>`<tr>
-    <td style="padding:6px 10px;border:1px solid #ddd">${new Date(r.date).toLocaleDateString('ar')}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${r.customerName||'-'}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${r.payMethod==='card'?'شبكة':'نقدي'}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd;color:red;font-weight:700">${fmt(r.totalRefund)} ${cur}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${r.cashierName||'-'}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${r.reason||'-'}</td>
-  </tr>`).join('');
-  const html = `<div style="font-family:'Cairo',sans-serif;direction:rtl;padding:30px;color:#000">
-    <h2>سجل الرجعات</h2>
-    <p style="color:#666;margin-bottom:8px">${settings.storeName||'المتجر'} | ${new Date().toLocaleDateString('ar')}</p>
-    <p style="margin-bottom:16px;font-weight:700">إجمالي الرجعات: <span style="color:red">${fmt(total)} ${cur}</span></p>
-    <table style="width:100%;border-collapse:collapse">
-      <thead><tr style="background:#fee2e2">${['التاريخ','المستلم','الطريقة','المبلغ','الكاشير','السبب'].map(h=>`<th style="padding:8px;border:1px solid #ddd;text-align:right">${h}</th>`).join('')}</tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
+  const total     = allRefunds.reduce((a,b)=>a+b.totalRefund,0);
+  const cashBack  = allRefunds.reduce((a,r)=>a+(r.cashRefundAmt||0),0);
+  const debtReduc = allRefunds.reduce((a,r)=>a+(r.debtRefundAmt||0),0);
+
+  const cards = pdfCards([
+    {label:'إجمالي المرتجعات', value:`${fmt(total)} ${cur}`, color:'red'},
+    {label:'عدد حالات الإرجاع', value:`${allRefunds.length}`, color:'gray'},
+    {label:'مسترد نقدي/شبكة',   value:`${fmt(cashBack)} ${cur}`, color:'blue'},
+    {label:'خصم من دين',        value:`${fmt(debtReduc)} ${cur}`, color:'gold'},
+  ]);
+
+  const rows = [...allRefunds].reverse().map((r,i)=>{
+    const bg = i%2===1 ? 'background:#f8fafc;' : '';
+    return `<tr style="${bg}">
+      <td style="padding:9px 13px;font-weight:700;color:#f59e0b">${h(r.refundNumber||'—')}</td>
+      <td style="padding:9px 13px">${new Date(r.date).toLocaleDateString('ar-EG')}</td>
+      <td style="padding:9px 13px">${h(r.customerName||'—')}</td>
+      <td style="padding:9px 13px;color:#f59e0b">${r.originalInvNumber||'—'}</td>
+      <td style="padding:9px 13px">${r.payMethod==='card'?'شبكة':'نقدي'}</td>
+      <td style="padding:9px 13px;font-weight:800;color:#dc2626">${fmt(r.totalRefund)} ${cur}</td>
+      <td style="padding:9px 13px">${h(r.cashierName||'—')}</td>
+      <td style="padding:9px 13px;font-size:11px;color:#64748b">${r.reason||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  const footer = `<td colspan="5" style="padding:9px 13px">الإجمالي</td>
+    <td style="padding:9px 13px;color:#dc2626;font-weight:800">${fmt(total)} ${cur}</td>
+    <td colspan="2"></td>`;
+
+  const bodyHTML = cards +
+    `<div class="pdf-section-title">↩️ سجل المرتجعات</div>` +
+    pdfTable(['رقم المرتجع','التاريخ','العميل','فاتورة أصلية','الطريقة','المبلغ','الكاشير','السبب'], rows, footer);
+
+  const html = pdfPage('↩️', 'سجل المرتجعات',
+    [`📅 ${new Date().toLocaleDateString('ar-EG')}`, `📋 ${allRefunds.length} مرتجع`],
+    '', bodyHTML, `إجمالي المرتجعات: ${fmt(total)} ${cur}`);
   printHTML(html, 'سجل-الرجعات');
 }
 
@@ -12556,19 +12879,55 @@ function exportDebtsCSV(){
 function exportDebtsPDF(){
   const debtSales = getDebtSales();
   const cur = settings.currency||'ريال';
-  const html = `<div style="font-family:'Cairo',sans-serif;direction:rtl;padding:30px;color:#000">
-    <h2 style="margin-bottom:4px">تقرير الديون والحسابات الآجلة</h2>
-    <p style="color:#666;margin-bottom:16px">${settings.storeName||'المتجر'} | ${new Date().toLocaleDateString('ar')}</p>
-    <table style="width:100%;border-collapse:collapse">
-      <thead><tr style="background:#f3f4f6">${['الفاتورة','العميل','التاريخ','الإجمالي','المدفوع','المتبقي','الحالة'].map(h=>`<th style="padding:8px;border:1px solid #ddd;text-align:right">${h}</th>`).join('')}</tr></thead>
-      <tbody>${debtSales.map(s=>{
-        const rem=getDebtRemaining(s);
-        const lp=allDebtPayments.filter(p=>p.saleId===s.id).reduce((a,b)=>a+b.amount,0);
-        const paid=(s.paymentMethod==='partial'||s.paymentMethod==='partial_card')?(s.paid||0)+lp:lp;
-        return `<tr>${[s.invNumber,s.customerName,new Date(s.date).toLocaleDateString('ar'),fmt(s.total)+' '+cur,fmt(paid)+' '+cur,fmt(rem)+' '+cur,rem<=0?'✅ مسدد':'❌ معلق'].map(c=>`<td style="padding:8px;border:1px solid #ddd">${c}</td>`).join('')}</tr>`;
-      }).join('')}</tbody>
-    </table>
-  </div>`;
+  const totalDebt    = debtSales.reduce((a,s)=>a+getDebtRemaining(s),0);
+  const pendingCount = debtSales.filter(s=>getDebtRemaining(s)>0).length;
+  const settledCount = debtSales.filter(s=>getDebtRemaining(s)<=0).length;
+  const totalValue   = debtSales.reduce((a,s)=>a+(s.total||0),0);
+
+  const cards = pdfCards([
+    {label:'إجمالي الفواتير الآجلة', value:`${debtSales.length}`, color:'blue', sub:`قيمة إجمالية ${fmt(totalValue)} ${cur}`},
+    {label:'إجمالي الديون المتبقية', value:`${fmt(totalDebt)} ${cur}`, color:'red'},
+    {label:'فواتير معلقة', value:`${pendingCount}`, color:'red'},
+    {label:'فواتير مسددة', value:`${settledCount}`, color:'green'},
+  ]);
+
+  const rows = debtSales.map((s,i)=>{
+    const rem = getDebtRemaining(s);
+    const lp  = allDebtPayments.filter(p=>p.saleId===s.id).reduce((a,b)=>a+b.amount,0);
+    const paid= (s.paymentMethod==='partial'||s.paymentMethod==='partial_card')?(s.paid||0)+lp:lp;
+    const bg  = i%2===1 ? 'background:#f8fafc;' : '';
+    const badge = rem<=0
+      ? `<span class="pdf-badge badge-success">✅ مسدد</span>`
+      : `<span class="pdf-badge badge-danger">❌ معلق</span>`;
+    return `<tr style="${bg}">
+      <td style="padding:9px 13px;font-weight:700;color:#f59e0b">${h(s.invNumber)}</td>
+      <td style="padding:9px 13px;font-weight:600">${h(s.customerName)}</td>
+      <td style="padding:9px 13px">${new Date(s.date).toLocaleDateString('ar-EG')}</td>
+      <td style="padding:9px 13px">${fmt(s.total)} ${cur}</td>
+      <td style="padding:9px 13px;color:#16a34a;font-weight:700">${fmt(paid)} ${cur}</td>
+      <td style="padding:9px 13px;color:${rem>0?'#dc2626':'#16a34a'};font-weight:800">${fmt(rem)} ${cur}</td>
+      <td style="padding:9px 13px">${badge}</td>
+    </tr>`;
+  }).join('');
+
+  const totalPaid = debtSales.reduce((a,s)=>{
+    const lp=(allDebtPayments.filter(p=>p.saleId===s.id)||[]).reduce((x,b)=>x+b.amount,0);
+    const paid=(s.paymentMethod==='partial'||s.paymentMethod==='partial_card')?(s.paid||0)+lp:lp;
+    return a+paid;
+  },0);
+
+  const footer = `<td colspan="3" style="padding:9px 13px">الإجماليات</td>
+    <td style="padding:9px 13px">${fmt(totalValue)} ${cur}</td>
+    <td style="padding:9px 13px;color:#16a34a">${fmt(totalPaid)} ${cur}</td>
+    <td style="padding:9px 13px;color:#dc2626">${fmt(totalDebt)} ${cur}</td>
+    <td></td>`;
+
+  const bodyHTML = cards + `<div class="pdf-section-title">📋 قائمة الديون والحسابات الآجلة</div>` +
+    pdfTable(['رقم الفاتورة','العميل','التاريخ','الإجمالي','المدفوع','المتبقي','الحالة'], rows, footer);
+
+  const html = pdfPage('💳', 'تقرير الديون والحسابات الآجلة',
+    [`📅 ${new Date().toLocaleDateString('ar-EG')}`, `📋 ${debtSales.length} فاتورة`],
+    '', bodyHTML, `إجمالي الديون المتبقية: ${fmt(totalDebt)} ${cur}`);
   printHTML(html, 'تقرير-الديون');
 }
 
@@ -12680,15 +13039,111 @@ function showCustomerStatement(customerId){
 
 
 function exportStatementPDF(){
-  const el = document.getElementById('custStatementContent');
   const cid = currentStatementCustomerId;
   const customer = allCustomers.find(c=>String(c.id)===String(cid));
-  const html = `<div style="font-family:'Cairo',sans-serif;direction:rtl;padding:30px;color:#000">
-    <h2>كشف حساب: ${customer?.name||'العميل'}</h2>
-    <p style="color:#666;margin-bottom:16px">${settings.storeName||'المتجر'} | ${new Date().toLocaleDateString('ar')}</p>
-    ${el.innerHTML.replace(/var\(--[^)]+\)/g,'#000').replace(/style="color:[^"]*"/g,'')}
-  </div>`;
-  printHTML(html, `كشف-حساب-${customer?.name||'عميل'}`);
+  const cur = settings.currency||'ريال';
+
+  if(!customer){ toast('لم يتم تحديد عميل','error'); return; }
+
+  const custSales   = allSales.filter(s=>String(s.customerId)===String(cid));
+  const custRefunds = allRefunds.filter(r=>String(r.customerId)===String(cid));
+  const payments    = allDebtPayments.filter(p=>String(p.customerId)===String(cid));
+
+  // ── Totals (same logic as showCustomerStatement) ──
+  const totalBoughtGross = custSales.reduce((a,b)=>safeAdd(a,b.total||0),0);
+  const totalRefunded    = custRefunds.reduce((a,r)=>safeAdd(a,r.totalRefund||0),0);
+  const totalBought      = safeSubtract(totalBoughtGross, totalRefunded);
+  const debtSales        = custSales.filter(s=>s.paymentMethod==='credit'||s.paymentMethod==='partial'||s.paymentMethod==='partial_card'||s.debtRemaining>0);
+  const totalDebt        = debtSales.reduce((a,s)=>safeAdd(a,getDebtRemaining(s)),0);
+  const laterPaid        = payments.reduce((a,b)=>safeAdd(a,b.amount||0),0);
+  const partialUpfront   = debtSales.filter(s=>s.paymentMethod==='partial'||s.paymentMethod==='partial_card').reduce((a,s)=>safeAdd(a,s.paid||0),0);
+  const cashRefundedBack = custRefunds.reduce((a,r)=>safeAdd(a,r.cashRefundAmt||0),0);
+  const cashOnlySales    = custSales.filter(s=>s.paymentMethod==='cash'||s.paymentMethod==='card').reduce((a,s)=>safeAdd(a,s.total||0),0);
+  const totalPaid        = safeSubtract(safeAdd(safeAdd(cashOnlySales,partialUpfront),laterPaid),cashRefundedBack);
+
+  // ── Build summary cards ──
+  const cards = pdfCards([
+    {label:'إجمالي المشتريات', value:`${fmt(totalBoughtGross)} ${cur}`, color:'gold'},
+    ...(totalRefunded>0 ? [{label:'إجمالي المرتجعات', value:`${fmt(totalRefunded)} ${cur}`, color:'red'}] : []),
+    {label:'الصافي بعد المرتجعات', value:`${fmt(totalBought)} ${cur}`, color:'green'},
+    {label:'إجمالي المدفوع',       value:`${fmt(totalPaid)} ${cur}`,   color:'blue'},
+    {label:'الدين المتبقي',        value:`${fmt(totalDebt)} ${cur}`,   color: totalDebt>0?'red':'green',
+      sub: totalDebt>0 ? '⚠️ يحتاج تسوية' : '✅ مسدد بالكامل'},
+  ]);
+
+  // ── Sales table ──
+  const salesHeaders = ['رقم الفاتورة','التاريخ','الإجمالي','صافي الفاتورة','طريقة الدفع','المتبقي'];
+  const salesRows = custSales.length === 0 ? '' :
+    custSales.map((s,i)=>{
+      const rem = getDebtRemaining(s);
+      const saleRefunds = custRefunds.filter(r=>r.originalSaleId===s.id);
+      const refundTotal = saleRefunds.reduce((a,r)=>safeAdd(a,r.totalRefund||0),0);
+      const netTotal    = safeSubtract(s.total, refundTotal);
+      const remColor    = rem>0 ? '#dc2626' : '#16a34a';
+      const bg          = i%2===1 ? 'background:#f8fafc;' : '';
+      return `<tr style="${bg}">
+        <td style="padding:9px 13px;font-weight:700;color:#f59e0b">${h(s.invNumber)}</td>
+        <td style="padding:9px 13px">${new Date(s.date).toLocaleDateString('ar-EG')}</td>
+        <td style="padding:9px 13px">${fmt(s.total)} ${cur}${refundTotal>0?` <span style="font-size:10px;color:#dc2626">(-${fmt(refundTotal)})</span>`:''}</td>
+        <td style="padding:9px 13px;font-weight:700">${fmt(netTotal)} ${cur}</td>
+        <td style="padding:9px 13px">${payMethodLabel(s.paymentMethod)}</td>
+        <td style="padding:9px 13px;font-weight:800;color:${remColor}">${fmt(rem)} ${cur}</td>
+      </tr>`;
+    }).join('');
+  const salesSection = `
+    <div class="pdf-section-title">📋 الفواتير (${custSales.length})</div>
+    ${pdfTable(salesHeaders, salesRows,
+      custSales.length>0 ? `<td colspan="2" style="padding:9px 13px">الإجمالي</td><td style="padding:9px 13px">${fmt(totalBoughtGross)} ${cur}</td><td style="padding:9px 13px">${fmt(totalBought)} ${cur}</td><td></td><td style="padding:9px 13px;color:${totalDebt>0?'#dc2626':'#16a34a'}">${fmt(totalDebt)} ${cur}</td>` : ''
+    )}`;
+
+  // ── Refunds table ──
+  const refundsSection = custRefunds.length > 0 ? `
+    <div class="pdf-section-title">↩️ المرتجعات (${custRefunds.length})</div>
+    ${pdfTable(
+      ['رقم المرتجع','التاريخ','الفاتورة الأصلية','إجمالي المرتجع','مسترد نقدي','خصم من الدين'],
+      custRefunds.map((r,i)=>{
+        const bg = i%2===1 ? 'background:#f8fafc;' : '';
+        return `<tr style="${bg}">
+          <td style="padding:9px 13px;font-weight:700">${h(r.refundNumber)}</td>
+          <td style="padding:9px 13px">${new Date(r.date).toLocaleDateString('ar-EG')}</td>
+          <td style="padding:9px 13px;color:#f59e0b">${r.originalInvNumber||'-'}</td>
+          <td style="padding:9px 13px;font-weight:800;color:#dc2626">- ${fmt(r.totalRefund)} ${cur}</td>
+          <td style="padding:9px 13px;color:#16a34a">${(r.cashRefundAmt||0)>0?fmt(r.cashRefundAmt)+' '+cur:'—'}</td>
+          <td style="padding:9px 13px;color:#d97706">${(r.debtRefundAmt||0)>0?fmt(r.debtRefundAmt)+' '+cur:'—'}</td>
+        </tr>`;
+      }).join('')
+    )}` : '';
+
+  // ── Payments table ──
+  const paymentsSection = payments.length > 0 ? `
+    <div class="pdf-section-title">💰 سجل الدفعات (${payments.length})</div>
+    ${pdfTable(
+      ['التاريخ','رقم الفاتورة','المبلغ المدفوع','طريقة الدفع','الكاشير'],
+      payments.map((p,i)=>{
+        const bg = i%2===1 ? 'background:#f8fafc;' : '';
+        return `<tr style="${bg}">
+          <td style="padding:9px 13px">${new Date(p.date).toLocaleDateString('ar-EG')}</td>
+          <td style="padding:9px 13px;color:#f59e0b">${h(p.invNumber)}</td>
+          <td style="padding:9px 13px;font-weight:800;color:#16a34a">${fmt(p.amount)} ${cur}</td>
+          <td style="padding:9px 13px">${payMethodLabel(p.method)}</td>
+          <td style="padding:9px 13px">${h(p.cashierName)}</td>
+        </tr>`;
+      }).join(''),
+      `<td colspan="2" style="padding:9px 13px">إجمالي الدفعات</td><td style="padding:9px 13px;color:#16a34a">${fmt(laterPaid)} ${cur}</td><td colspan="2"></td>`
+    )}` : '';
+
+  const bodyHTML = cards + salesSection + refundsSection + paymentsSection;
+
+  const customerPhone = customer.phone ? `📞 ${customer.phone}` : '';
+  const html = pdfPage(
+    '👤', `كشف حساب: ${customer.name}`,
+    [`📋 الفواتير: ${custSales.length}`, `💰 الدفعات: ${payments.length}`, customerPhone].filter(Boolean),
+    customer.phone ? `هاتف: ${customer.phone}` : '',
+    bodyHTML,
+    `دين متبقي: ${fmt(totalDebt)} ${cur}`
+  );
+
+  printHTML(html, `كشف-حساب-${customer.name}`);
 }
 
 // ============================================================
@@ -12857,54 +13312,57 @@ function resetAnalyticsFilter(){
 function exportAnalyticsPDF(){
   const d = window._analyticsData;
   if(!d){ toast('حمّل التحليلات أولاً','error'); return; }
-  const biz = settings.businessName||'نقطة البيع';
-  const dateStr = new Date().toLocaleDateString('ar');
-  const period  = d.fromVal ? `من ${d.fromVal} إلى ${d.toVal||dateStr}` : 'كل الفترات';
-  const w = window.open('','_blank','width=1000,height=700');
-  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8">
-    <title>تحليلات المخزون - ${biz}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-      body{font-family:'Cairo',sans-serif;direction:rtl;padding:20px;color:#111;font-size:13px}
-      h1{font-size:20px;margin:0 0 2px}h2{font-size:14px;color:#444;margin:20px 0 8px;border-bottom:2px solid #f59e0b;padding-bottom:4px}
-      .meta{font-size:12px;color:#666;margin-bottom:20px}
-      table{width:100%;border-collapse:collapse;margin-bottom:16px}
-      th{background:#1a1a2e;color:#fff;padding:7px 10px;text-align:right;font-size:12px}
-      td{padding:6px 10px;border-bottom:1px solid #eee;font-size:12px}
-      tr:nth-child(even) td{background:#f9f9f9}
-      .profit{color:#059669;font-weight:700}.loss{color:#dc2626;font-weight:700}
-      @media print{body{padding:8px}.no-print{display:none}}
-    </style>
-  </head><body>
-    <h1>📊 تحليلات المخزون — ${biz}</h1>
-    <div class="meta">تاريخ الإصدار: ${dateStr} | الفترة: ${period}</div>
+  const cur     = d.cur;
+  const period  = d.fromVal ? `من ${d.fromVal} إلى ${d.toVal||new Date().toLocaleDateString('ar-EG')}` : 'كل الفترات';
 
-    <h2>🕰️ المخزون الراكد</h2>
-    <table><thead><tr><th>المنتج</th><th>الكمية</th><th>آخر بيع</th><th>أيام الركود</th></tr></thead>
-    <tbody>${d.stagnant.map(({p,ls,daysSince})=>`<tr>
-      <td>${h(p.name)}</td><td>${p.stock}</td>
-      <td>${ls?new Date(ls).toLocaleDateString('ar'):'لا يوجد'}</td>
-      <td class="loss">${daysSince!==null?daysSince+' يوم':'—'}</td>
-    </tr>`).join('')||'<tr><td colspan="4" style="text-align:center">لا يوجد مخزون راكد</td></tr>'}</tbody></table>
+  const stagnantRows = d.stagnant.map((item,i)=>{
+    const {p,ls,daysSince} = item;
+    const bg = i%2===1 ? 'background:#f8fafc;' : '';
+    return `<tr style="${bg}">
+      <td style="padding:9px 13px;font-weight:600">${h(p.name)}</td>
+      <td style="padding:9px 13px">${p.stock} وحدة</td>
+      <td style="padding:9px 13px">${ls ? new Date(ls).toLocaleDateString('ar-EG') : 'لا يوجد'}</td>
+      <td style="padding:9px 13px;font-weight:800;color:#dc2626">${daysSince!==null?daysSince+' يوم':'—'}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="4" style="padding:20px;text-align:center;color:#94a3b8">لا يوجد مخزون راكد</td></tr>';
 
-    <h2>🔥 الأكثر مبيعاً</h2>
-    <table><thead><tr><th>#</th><th>المنتج</th><th>الكمية المباعة</th><th>الإيراد (${d.cur})</th></tr></thead>
-    <tbody>${d.bestSellers.slice(0,20).map((b,i)=>`<tr>
-      <td>${i+1}</td><td>${h(b.name)}</td>
-      <td class="profit">${b.qty} وحدة</td><td>${b.rev.toFixed(2)}</td>
-    </tr>`).join('')||'<tr><td colspan="4" style="text-align:center">لا توجد بيانات</td></tr>'}</tbody></table>
+  const bestRows = d.bestSellers.slice(0,20).map((b,i)=>{
+    const bg = i%2===1 ? 'background:#f8fafc;' : '';
+    const rank = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
+    return `<tr style="${bg}">
+      <td style="padding:9px 13px;font-weight:800;text-align:center">${rank}</td>
+      <td style="padding:9px 13px;font-weight:600">${h(b.name)}</td>
+      <td style="padding:9px 13px;color:#16a34a;font-weight:700">${b.qty} وحدة</td>
+      <td style="padding:9px 13px;font-weight:700">${fmt(b.rev)} ${cur}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="4" style="padding:20px;text-align:center;color:#94a3b8">لا توجد بيانات</td></tr>';
 
-    <h2>💰 الأكثر ربحية</h2>
-    <table><thead><tr><th>#</th><th>المنتج</th><th>المباع</th><th>الإيراد</th><th>التكلفة</th><th>الربح (${d.cur})</th><th>الهامش%</th></tr></thead>
-    <tbody>${d.profitable.slice(0,20).map((r,i)=>`<tr>
-      <td>${i+1}</td><td>${h(r.name)}</td><td>${r.qty}</td>
-      <td>${r.rev.toFixed(2)}</td><td>${r.cost.toFixed(2)}</td>
-      <td class="${r.profit>=0?'profit':'loss'}">${r.profit>=0?'+':''}${r.profit.toFixed(2)}</td>
-      <td>${r.margin}%</td>
-    </tr>`).join('')||'<tr><td colspan="7" style="text-align:center">لا توجد بيانات</td></tr>'}</tbody></table>
-    <script>window.onload=()=>window.print()<\/script>
-  </body></html>`);
-  w.document.close();
+  const profRows = d.profitable.slice(0,20).map((r,i)=>{
+    const bg = i%2===1 ? 'background:#f8fafc;' : '';
+    const rank = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
+    const pColor = r.profit>=0 ? '#16a34a' : '#dc2626';
+    return `<tr style="${bg}">
+      <td style="padding:9px 13px;font-weight:800;text-align:center">${rank}</td>
+      <td style="padding:9px 13px;font-weight:600">${h(r.name)}</td>
+      <td style="padding:9px 13px">${r.qty} وحدة</td>
+      <td style="padding:9px 13px">${fmt(r.rev)} ${cur}</td>
+      <td style="padding:9px 13px;color:#64748b">${fmt(r.cost)} ${cur}</td>
+      <td style="padding:9px 13px;font-weight:800;color:${pColor}">${r.profit>=0?'+':''}${fmt(r.profit)} ${cur}</td>
+      <td style="padding:9px 13px"><span class="pdf-badge badge-success">${r.margin}%</span></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7" style="padding:20px;text-align:center;color:#94a3b8">لا توجد بيانات</td></tr>';
+
+  const bodyHTML =
+    `<div class="pdf-section-title">🕰️ المخزون الراكد (${d.stagnant.length} صنف)</div>` +
+    pdfTable(['المنتج','الكمية','آخر بيع','أيام الركود'], stagnantRows) +
+    `<div class="pdf-section-title">🔥 الأكثر مبيعاً</div>` +
+    pdfTable(['#','المنتج','الكمية المباعة',`الإيراد (${cur})`], bestRows) +
+    `<div class="pdf-section-title">💰 الأكثر ربحية</div>` +
+    pdfTable(['#','المنتج','المباع',`الإيراد`,`التكلفة`,`الربح (${cur})`,'الهامش%'], profRows);
+
+  const html = pdfPage('📊', 'تحليلات المخزون',
+    [`📅 الفترة: ${period}`], '', bodyHTML);
+  printHTML(html, 'تحليلات-المخزون');
 }
 
 async function exportStockMovCSV(){
@@ -12990,19 +13448,49 @@ async function applyStockCount(){
 
 function exportStockCountPDF(){
   const cur = settings.currency||'ريال';
-  const rows = allProducts.filter(p=>p.active).map(p=>{
-    const actual = stockCountData[p.id]!==undefined ? stockCountData[p.id] : p.stock;
-    const diff = actual - p.stock;
-    return `<tr><td style="padding:6px 10px;border:1px solid #ddd">${h(p.name)}</td><td style="padding:6px 10px;border:1px solid #ddd">${p.sku||'-'}</td><td style="padding:6px 10px;border:1px solid #ddd">${p.stock}</td><td style="padding:6px 10px;border:1px solid #ddd">${actual}</td><td style="padding:6px 10px;border:1px solid #ddd;color:${diff>0?'green':diff<0?'red':'#666'}">${diff>0?'+':''}${diff}</td></tr>`;
-  });
-  const html = `<div style="font-family:'Cairo',sans-serif;direction:rtl;padding:30px;color:#000">
-    <h2>تقرير جرد المخزون</h2>
-    <p style="color:#666;margin-bottom:16px">${settings.storeName||'المتجر'} | ${new Date().toLocaleDateString('ar')}</p>
-    <table style="width:100%;border-collapse:collapse">
-      <thead><tr style="background:#f3f4f6"><th style="padding:8px;border:1px solid #ddd">المنتج</th><th style="padding:8px;border:1px solid #ddd">الكود</th><th style="padding:8px;border:1px solid #ddd">المسجل</th><th style="padding:8px;border:1px solid #ddd">الفعلي</th><th style="padding:8px;border:1px solid #ddd">الفرق</th></tr></thead>
-      <tbody>${rows.join('')}</tbody>
-    </table>
-  </div>`;
+  const products = allProducts.filter(p=>p.active);
+  const diffs = products.map(p=>({
+    ...p,
+    actual: stockCountData[p.id]!==undefined ? stockCountData[p.id] : p.stock,
+    diff:   (stockCountData[p.id]!==undefined ? stockCountData[p.id] : p.stock) - p.stock,
+  }));
+  const shortCount    = diffs.filter(p=>p.diff<0).length;
+  const surplusCount  = diffs.filter(p=>p.diff>0).length;
+  const matchedCount  = diffs.filter(p=>p.diff===0).length;
+  const totalShortage = diffs.filter(p=>p.diff<0).reduce((a,p)=>a+Math.abs(p.diff),0);
+
+  const cards = pdfCards([
+    {label:'إجمالي الأصناف', value:`${products.length}`, color:'blue'},
+    {label:'مطابق', value:`${matchedCount}`, color:'green'},
+    {label:'زيادة', value:`${surplusCount}`, color:'gold'},
+    {label:'نقص', value:`${shortCount}`, color:'red', sub:`إجمالي النقص: ${totalShortage} وحدة`},
+  ]);
+
+  const rows = diffs.map((p,i)=>{
+    const bg    = i%2===1 ? 'background:#f8fafc;' : '';
+    const dColor= p.diff>0?'#16a34a':p.diff<0?'#dc2626':'#94a3b8';
+    const badge = p.diff===0
+      ? `<span class="pdf-badge badge-success">✅ مطابق</span>`
+      : p.diff>0
+        ? `<span class="pdf-badge badge-warn">▲ زيادة</span>`
+        : `<span class="pdf-badge badge-danger">▼ نقص</span>`;
+    return `<tr style="${bg}">
+      <td style="padding:9px 13px;font-weight:600">${h(p.name)}</td>
+      <td style="padding:9px 13px;font-size:11px;color:#64748b">${p.sku||'—'}</td>
+      <td style="padding:9px 13px">${p.stock}</td>
+      <td style="padding:9px 13px;font-weight:700">${p.actual}</td>
+      <td style="padding:9px 13px;font-weight:800;color:${dColor}">${p.diff>0?'+':''}${p.diff}</td>
+      <td style="padding:9px 13px">${badge}</td>
+    </tr>`;
+  }).join('');
+
+  const bodyHTML = cards +
+    `<div class="pdf-section-title">📦 تفاصيل الجرد</div>` +
+    pdfTable(['المنتج','الكود','المسجل','الفعلي','الفرق','الحالة'], rows);
+
+  const html = pdfPage('📦', 'تقرير جرد المخزون',
+    [`📅 ${new Date().toLocaleDateString('ar-EG')}`, `📋 ${products.length} صنف`],
+    '', bodyHTML, `نقص: ${shortCount} صنف | زيادة: ${surplusCount} صنف`);
   printHTML(html, `جرد-${new Date().toISOString().split('T')[0]}`);
 }
 
@@ -13010,19 +13498,295 @@ function exportStockCountPDF(){
 // PDF EXPORT HELPER
 // ============================================================
 function printHTML(htmlContent, filename='print'){
-  const w = window.open('','_blank','width=900,height=700');
+  const storeName = settings?.storeName || 'نظام نقطة البيع';
+  const w = window.open('','_blank','width=1000,height=750');
   w.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <title>${filename}</title>
-    <style>*{font-family:'Cairo',sans-serif;direction:rtl}@media print{button{display:none}}</style>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Cairo', sans-serif;
+        direction: rtl;
+        background: #f1f5f9;
+        color: #1e293b;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      /* ── No-print toolbar ── */
+      .pdf-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: #1e293b;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.3);
+      }
+      .pdf-toolbar .store-label { color: #94a3b8; font-size: 13px; font-weight: 600; }
+      .pdf-toolbar .btn-print {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 9px 22px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        transition: opacity .15s;
+      }
+      .pdf-toolbar .btn-print:hover { opacity: .88; }
+      .pdf-toolbar .btn-close {
+        background: #334155;
+        color: #cbd5e1;
+        border: none;
+        border-radius: 8px;
+        padding: 9px 18px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background .15s;
+      }
+      .pdf-toolbar .btn-close:hover { background: #475569; }
+      /* ── Page wrapper ── */
+      .pdf-page {
+        max-width: 960px;
+        margin: 24px auto;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,.1);
+        overflow: hidden;
+      }
+      /* ── Page header ── */
+      .pdf-header {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        padding: 28px 32px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .pdf-header .title-block {}
+      .pdf-header .doc-title {
+        font-size: 22px;
+        font-weight: 900;
+        color: #f8fafc;
+        margin-bottom: 4px;
+      }
+      .pdf-header .doc-meta {
+        font-size: 12px;
+        color: #94a3b8;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .pdf-header .doc-meta span { display: flex; align-items: center; gap: 4px; }
+      .pdf-header .store-badge {
+        background: rgba(245,158,11,.15);
+        border: 1px solid rgba(245,158,11,.35);
+        border-radius: 10px;
+        padding: 10px 18px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .pdf-header .store-badge .store-name {
+        font-size: 15px;
+        font-weight: 800;
+        color: #f59e0b;
+      }
+      .pdf-header .store-badge .store-sub {
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 2px;
+      }
+      /* ── Content area ── */
+      .pdf-body { padding: 28px 32px; }
+      /* ── Summary cards ── */
+      .pdf-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+      .pdf-card {
+        border-radius: 12px;
+        padding: 16px 14px;
+        border: 1px solid;
+      }
+      .pdf-card.gold   { background: #fffbeb; border-color: #fcd34d; }
+      .pdf-card.green  { background: #f0fdf4; border-color: #86efac; }
+      .pdf-card.red    { background: #fff1f2; border-color: #fca5a5; }
+      .pdf-card.blue   { background: #eff6ff; border-color: #93c5fd; }
+      .pdf-card.gray   { background: #f8fafc; border-color: #cbd5e1; }
+      .pdf-card .card-label {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 600;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+      }
+      .pdf-card .card-value {
+        font-size: 19px;
+        font-weight: 900;
+        color: #1e293b;
+        line-height: 1.2;
+      }
+      .pdf-card .card-sub {
+        font-size: 10px;
+        color: #94a3b8;
+        margin-top: 4px;
+      }
+      /* ── Section heading ── */
+      .pdf-section-title {
+        font-size: 14px;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 24px 0 12px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      /* ── Tables ── */
+      .pdf-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      }
+      .pdf-table thead tr {
+        background: #1e293b;
+        color: #f8fafc;
+      }
+      .pdf-table thead th {
+        padding: 10px 13px;
+        text-align: right;
+        font-weight: 700;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .pdf-table tbody tr { border-bottom: 1px solid #f1f5f9; }
+      .pdf-table tbody tr:nth-child(even) { background: #f8fafc; }
+      .pdf-table tbody tr:hover { background: #f0f9ff; }
+      .pdf-table tbody td {
+        padding: 9px 13px;
+        color: #334155;
+        vertical-align: middle;
+      }
+      .pdf-table tfoot tr { background: #f1f5f9; border-top: 2px solid #e2e8f0; }
+      .pdf-table tfoot td {
+        padding: 10px 13px;
+        font-weight: 800;
+        color: #1e293b;
+      }
+      /* ── Badges ── */
+      .pdf-badge {
+        display: inline-block;
+        padding: 2px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .badge-success { background: #dcfce7; color: #16a34a; }
+      .badge-danger  { background: #fee2e2; color: #dc2626; }
+      .badge-warn    { background: #fef9c3; color: #ca8a04; }
+      .badge-info    { background: #dbeafe; color: #2563eb; }
+      /* ── Footer ── */
+      .pdf-footer {
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        padding: 14px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #94a3b8;
+      }
+      /* ── Print overrides ── */
+      @media print {
+        body { background: #fff; }
+        .pdf-toolbar { display: none !important; }
+        .pdf-page {
+          max-width: 100%;
+          margin: 0;
+          border-radius: 0;
+          box-shadow: none;
+        }
+        .pdf-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .pdf-table thead tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .pdf-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      }
+    </style>
     </head><body>
-    <div style="text-align:center;margin-bottom:20px;padding:10px;background:#f9fafb">
-      <button onclick="window.print()" style="padding:10px 24px;background:#f59e0b;border:none;border-radius:8px;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;font-size:15px">🖨️ طباعة / حفظ PDF</button>
-      <button onclick="window.close()" style="margin-right:8px;padding:10px 24px;background:#e5e7eb;border:none;border-radius:8px;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer">إغلاق</button>
+    <div class="pdf-toolbar">
+      <span class="store-label">🏪 ${storeName}</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn-print" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+        <button class="btn-close" onclick="window.close()">✕ إغلاق</button>
+      </div>
     </div>
     ${htmlContent}
     </body></html>`);
   w.document.close();
+}
+
+// helper: build a styled PDF page shell
+function pdfPage(titleIcon, docTitle, metaItems, storeExtra, bodyHTML, footerNote=''){
+  const storeName = settings?.storeName || 'المتجر';
+  const cur = settings?.currency || 'ريال';
+  const now = new Date().toLocaleDateString('ar-EG', {year:'numeric',month:'long',day:'numeric'});
+  const metaStr = metaItems.map(m=>`<span>${m}</span>`).join('');
+  return `
+  <div class="pdf-page">
+    <div class="pdf-header">
+      <div class="title-block">
+        <div class="doc-title">${titleIcon} ${docTitle}</div>
+        <div class="doc-meta">${metaStr}</div>
+      </div>
+      <div class="store-badge">
+        <div class="store-name">${storeName}</div>
+        <div class="store-sub">${now}</div>
+        ${storeExtra ? `<div class="store-sub">${storeExtra}</div>` : ''}
+      </div>
+    </div>
+    <div class="pdf-body">${bodyHTML}</div>
+    <div class="pdf-footer">
+      <span>تم الإنشاء: ${new Date().toLocaleString('ar-EG')}</span>
+      <span>${footerNote || storeName}</span>
+    </div>
+  </div>`;
+}
+
+// helper: summary cards row
+function pdfCards(cards){
+  return `<div class="pdf-cards">${cards.map(c=>`
+    <div class="pdf-card ${c.color||'gray'}">
+      <div class="card-label">${c.label}</div>
+      <div class="card-value">${c.value}</div>
+      ${c.sub ? `<div class="card-sub">${c.sub}</div>` : ''}
+    </div>`).join('')}</div>`;
+}
+
+// helper: table builder
+function pdfTable(headers, rows, footerRow=''){
+  return `<table class="pdf-table">
+    <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows||'<tr><td colspan="'+headers.length+'" style="text-align:center;padding:20px;color:#94a3b8">لا توجد بيانات</td></tr>'}</tbody>
+    ${footerRow?`<tfoot><tr>${footerRow}</tr></tfoot>`:''}
+  </table>`;
 }
 
 function downloadReceiptPDF(){
@@ -13724,21 +14488,52 @@ function exportReportPDF(){
   const to = document.getElementById('reportTo').value;
   const sales = allSales.filter(s => { const d=s.date.split('T')[0]; return d>=from&&d<=to; });
   const cur = settings.currency||'ريال';
-  const totalRev = sales.reduce((a,b)=>a+b.total,0);
+  const totalRev    = sales.reduce((a,b)=>a+b.total,0);
   const totalProfit = sales.reduce((a,b)=>a+b.items.reduce((x,y)=>x+(y.price-y.cost)*y.qty,0),0);
-  const html = `<div style="font-family:'Cairo',sans-serif;direction:rtl;padding:30px;color:#000">
-    <h2 style="margin-bottom:4px">تقرير المبيعات</h2>
-    <p style="color:#666;margin-bottom:8px">${settings.storeName||'المتجر'} | من ${from} إلى ${to}</p>
-    <div style="display:flex;gap:20px;margin-bottom:20px;flex-wrap:wrap">
-      <div style="background:#fef3c7;padding:12px 20px;border-radius:10px"><strong>إجمالي المبيعات</strong><br><span style="font-size:20px;font-weight:900">${fmt(totalRev)} ${cur}</span></div>
-      <div style="background:#d1fae5;padding:12px 20px;border-radius:10px"><strong>صافي الربح</strong><br><span style="font-size:20px;font-weight:900">${fmt(totalProfit)} ${cur}</span></div>
-      <div style="background:#dbeafe;padding:12px 20px;border-radius:10px"><strong>عدد الفواتير</strong><br><span style="font-size:20px;font-weight:900">${sales.length}</span></div>
-    </div>
-    <table style="width:100%;border-collapse:collapse">
-      <thead><tr style="background:#f3f4f6">${['رقم الفاتورة','التاريخ','العميل','الكاشير','طريقة الدفع','الإجمالي','الربح'].map(h=>`<th style="padding:7px 10px;border:1px solid #ddd;text-align:right">${h}</th>`).join('')}</tr></thead>
-      <tbody>${sales.map(s=>`<tr>${[s.invNumber,new Date(s.date).toLocaleDateString('ar'),s.customerName,s.cashierName,payMethodLabel(s.paymentMethod),fmt(s.total)+' '+cur,fmt(s.items.reduce((a,b)=>a+(b.price-b.cost)*b.qty,0))+' '+cur].map(c=>`<td style="padding:7px 10px;border:1px solid #ddd">${c}</td>`).join('')}</tr>`).join('')}</tbody>
-    </table>
+  const totalDiscount = sales.reduce((a,b)=>a+(b.discount||0),0);
+  const cashSales   = sales.filter(s=>s.paymentMethod==='cash').reduce((a,b)=>a+b.total,0);
+  const cardSales   = sales.filter(s=>s.paymentMethod==='card').reduce((a,b)=>a+b.total,0);
+  const creditSales = sales.filter(s=>s.paymentMethod==='credit'||s.paymentMethod==='partial'||s.paymentMethod==='partial_card').reduce((a,b)=>a+b.total,0);
+
+  const cards = pdfCards([
+    {label:'إجمالي المبيعات',  value:`${fmt(totalRev)} ${cur}`,    color:'gold'},
+    {label:'صافي الربح',       value:`${fmt(totalProfit)} ${cur}`, color:'green', sub:`هامش ${totalRev>0?Math.round(totalProfit/totalRev*100):0}%`},
+    {label:'عدد الفواتير',     value:`${sales.length}`,           color:'blue'},
+    {label:'إجمالي الخصومات',  value:`${fmt(totalDiscount)} ${cur}`, color:'red'},
+  ]);
+
+  const payBreakdown = `<div class="pdf-section-title">💳 توزيع طرق الدفع</div>
+  <div class="pdf-cards" style="margin-bottom:24px">
+    <div class="pdf-card green"><div class="card-label">نقدي</div><div class="card-value">${fmt(cashSales)} ${cur}</div></div>
+    <div class="pdf-card blue"><div class="card-label">شبكة / بطاقة</div><div class="card-value">${fmt(cardSales)} ${cur}</div></div>
+    <div class="pdf-card red"><div class="card-label">آجل / جزئي</div><div class="card-value">${fmt(creditSales)} ${cur}</div></div>
   </div>`;
+
+  const rows = sales.map((s,i)=>{
+    const profit = s.items.reduce((a,b)=>a+(b.price-b.cost)*b.qty,0);
+    const bg = i%2===1 ? 'background:#f8fafc;' : '';
+    return `<tr style="${bg}">
+      <td style="padding:9px 13px;font-weight:700;color:#f59e0b">${h(s.invNumber)}</td>
+      <td style="padding:9px 13px">${new Date(s.date).toLocaleDateString('ar-EG')}</td>
+      <td style="padding:9px 13px">${h(s.customerName||'—')}</td>
+      <td style="padding:9px 13px">${h(s.cashierName||'—')}</td>
+      <td style="padding:9px 13px">${payMethodLabel(s.paymentMethod)}</td>
+      <td style="padding:9px 13px;font-weight:700">${fmt(s.total)} ${cur}</td>
+      <td style="padding:9px 13px;color:#16a34a;font-weight:700">${fmt(profit)} ${cur}</td>
+    </tr>`;
+  }).join('');
+
+  const footer = `<td colspan="5" style="padding:9px 13px">الإجماليات</td>
+    <td style="padding:9px 13px">${fmt(totalRev)} ${cur}</td>
+    <td style="padding:9px 13px;color:#16a34a">${fmt(totalProfit)} ${cur}</td>`;
+
+  const bodyHTML = cards + payBreakdown +
+    `<div class="pdf-section-title">📋 تفاصيل الفواتير</div>` +
+    pdfTable(['رقم الفاتورة','التاريخ','العميل','الكاشير','طريقة الدفع','الإجمالي','الربح'], rows, footer);
+
+  const html = pdfPage('📊', 'تقرير المبيعات',
+    [`📅 من ${from} إلى ${to}`, `📋 ${sales.length} فاتورة`],
+    '', bodyHTML, `إجمالي المبيعات: ${fmt(totalRev)} ${cur}`);
   printHTML(html, `تقرير-مبيعات-${from}-${to}`);
 }
 
@@ -13955,32 +14750,52 @@ async function saveTreasuryEntry(){
 function exportTreasuryPDF(){
   const cur = settings.currency||'ريال';
   const filtered = getTreasuryFilteredEntries();
-  const periodIn = filtered.filter(e=>e.type==='in').reduce((a,b)=>a+b.amount,0);
+  const periodIn  = filtered.filter(e=>e.type==='in').reduce((a,b)=>a+b.amount,0);
   const periodOut = filtered.filter(e=>e.type==='out').reduce((a,b)=>a+b.amount,0);
   const srcLabels = {sale:'مبيعات', debt:'تحصيل', purchase:'مشتريات', refund:'مرتجع', expense:'نثريات', manual:'يدوي'};
-  const rows = [...filtered].reverse().map(e=>`<tr>
-    <td style="padding:6px 10px;border:1px solid #ddd">${new Date(e.date).toLocaleDateString('ar')}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd;color:${e.type==='in'?'green':'red'}">${e.type==='in'?'داخل':'خارج'}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${e.ref||'-'}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${e.fromTo||'-'}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${srcLabels[e.source]||e.source}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd;color:green">${e.type==='in'?fmt(e.amount)+' '+cur:'-'}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd;color:red">${e.type!=='in'?fmt(e.amount)+' '+cur:'-'}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${e.note||''}</td>
-  </tr>`).join('');
-  const html = `<div style="font-family:'Cairo',sans-serif;direction:rtl;padding:30px;color:#000">
-    <h2>كشف حساب الخزنة</h2>
-    <p style="color:#666;margin-bottom:12px">${settings.storeName||'المتجر'} | ${new Date().toLocaleDateString('ar')}</p>
-    <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">
-      <div style="background:#d1fae5;padding:10px 16px;border-radius:8px"><strong>إجمالي الداخل:</strong> ${fmt(periodIn)} ${cur}</div>
-      <div style="background:#fee2e2;padding:10px 16px;border-radius:8px"><strong>إجمالي الخارج:</strong> ${fmt(periodOut)} ${cur}</div>
-      <div style="background:#dbeafe;padding:10px 16px;border-radius:8px"><strong>الصافي:</strong> ${fmt(periodIn-periodOut)} ${cur}</div>
-    </div>
-    <table style="width:100%;border-collapse:collapse">
-      <thead><tr style="background:#f3f4f6">${['التاريخ','النوع','المرجع','من/إلى','الفئة','الداخل','الخارج','ملاحظة'].map(h=>`<th style="padding:8px;border:1px solid #ddd;text-align:right">${h}</th>`).join('')}</tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
+  const allCash   = allTreasuryEntries.filter(e=>!e.isNetwork);
+  let running = 0;
+  const withBal = [...allCash].map(e=>{ running += e.type==='in'?e.amount:-e.amount; return {...e,running}; });
+  const filtIds  = new Set(filtered.map(e=>e.id||e.date+e.amount));
+  const orderedFiltered = withBal.filter(e=>filtIds.has(e.id||e.date+e.amount)).reverse();
+
+  const cards = pdfCards([
+    {label:'إجمالي الداخل',  value:`${fmt(periodIn)} ${cur}`,  color:'green'},
+    {label:'إجمالي الخارج',  value:`${fmt(periodOut)} ${cur}`, color:'red'},
+    {label:'الصافي للفترة',  value:`${fmt(periodIn-periodOut)} ${cur}`, color: periodIn>=periodOut?'blue':'red'},
+    {label:'عدد العمليات',   value:`${filtered.length}`, color:'gray'},
+  ]);
+
+  const rows = orderedFiltered.map((e,i)=>{
+    const isIn = e.type==='in';
+    const bg   = i%2===1 ? 'background:#f8fafc;' : '';
+    return `<tr style="${bg}">
+      <td style="padding:9px 13px">${new Date(e.date).toLocaleDateString('ar-EG')}</td>
+      <td style="padding:9px 13px">
+        <span class="pdf-badge ${isIn?'badge-success':'badge-danger'}">${isIn?'⬆ داخل':'⬇ خارج'}</span>
+      </td>
+      <td style="padding:9px 13px;font-size:11px">${e.ref||'-'}</td>
+      <td style="padding:9px 13px">${e.fromTo||'-'}</td>
+      <td style="padding:9px 13px"><span class="pdf-badge badge-info">${srcLabels[e.source]||e.source||'-'}</span></td>
+      <td style="padding:9px 13px;color:#16a34a;font-weight:700">${isIn ? fmt(e.amount)+' '+cur : '—'}</td>
+      <td style="padding:9px 13px;color:#dc2626;font-weight:700">${!isIn ? fmt(e.amount)+' '+cur : '—'}</td>
+      <td style="padding:9px 13px;font-size:11px;color:#64748b">${e.note||''}</td>
+      <td style="padding:9px 13px;font-weight:800;color:${(e.running||0)>=0?'#1e293b':'#dc2626'}">${fmt(e.running||0)} ${cur}</td>
+    </tr>`;
+  }).join('');
+
+  const footer = `<td colspan="5" style="padding:9px 13px">الإجماليات</td>
+    <td style="padding:9px 13px;color:#16a34a">${fmt(periodIn)} ${cur}</td>
+    <td style="padding:9px 13px;color:#dc2626">${fmt(periodOut)} ${cur}</td>
+    <td colspan="2" style="padding:9px 13px">صافي: ${fmt(periodIn-periodOut)} ${cur}</td>`;
+
+  const bodyHTML = cards +
+    `<div class="pdf-section-title">📋 حركات الخزنة</div>` +
+    pdfTable(['التاريخ','النوع','المرجع','من/إلى','الفئة','الداخل','الخارج','ملاحظة','الرصيد'], rows, footer);
+
+  const html = pdfPage('🏦', 'كشف حساب الخزنة',
+    [`📅 ${new Date().toLocaleDateString('ar-EG')}`, `📋 ${filtered.length} عملية`],
+    '', bodyHTML, `صافي الفترة: ${fmt(periodIn-periodOut)} ${cur}`);
   printHTML(html, 'كشف-الخزنة');
 }
 
@@ -14158,23 +14973,36 @@ function exportExpensesPDF(){
   const total = monthExpenses.reduce((a,b)=>a+b.amount,0);
   const catTotals = {};
   monthExpenses.forEach(e => { catTotals[e.category] = (catTotals[e.category]||0) + e.amount; });
-  const rows = [...allExpenses].reverse().map(e=>`<tr>
-    <td style="padding:6px 10px;border:1px solid #ddd">${new Date(e.date).toLocaleDateString('ar')}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${h(e.description)}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd">${e.category}</td>
-    <td style="padding:6px 10px;border:1px solid #ddd;font-weight:700;color:red">${fmt(e.amount)} ${cur}</td>
-  </tr>`).join('');
-  const catSummary = EXPENSE_CATS.map(c=>`<div style="background:#fff8f0;padding:8px 14px;border-radius:8px;display:inline-block;margin:4px"><strong>${c.icon} ${c.label}:</strong> ${fmt(catTotals[c.key]||0)} ${cur}</div>`).join('');
-  const html = `<div style="font-family:'Cairo',sans-serif;direction:rtl;padding:30px;color:#000">
-    <h2>تقرير النثريات - ${now.toLocaleDateString('ar',{month:'long',year:'numeric'})}</h2>
-    <p style="color:#666;margin-bottom:12px">${settings.storeName||'المتجر'}</p>
-    <div style="margin-bottom:16px">${catSummary}</div>
-    <p style="font-weight:700;font-size:16px;margin-bottom:16px">إجمالي الشهر: <span style="color:red">${fmt(total)} ${cur}</span></p>
-    <table style="width:100%;border-collapse:collapse">
-      <thead><tr style="background:#fee2e2">${['التاريخ','الوصف','التصنيف','المبلغ'].map(h=>`<th style="padding:8px;border:1px solid #ddd;text-align:right">${h}</th>`).join('')}</tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
+
+  const catCards = pdfCards(
+    EXPENSE_CATS.map(c=>({ label:`${c.icon} ${c.label}`, value:`${fmt(catTotals[c.key]||0)} ${cur}`, color:'gray' }))
+  );
+
+  const rows = [...allExpenses].reverse().map((e,i)=>{
+    const catInfo = EXPENSE_CATS.find(c=>c.key===e.category)||{icon:'💼',label:e.category};
+    const bg = i%2===1 ? 'background:#f8fafc;' : '';
+    return `<tr style="${bg}">
+      <td style="padding:9px 13px">${new Date(e.date).toLocaleDateString('ar-EG')}</td>
+      <td style="padding:9px 13px;font-weight:600">${h(e.description)}</td>
+      <td style="padding:9px 13px">${catInfo.icon} ${catInfo.label}</td>
+      <td style="padding:9px 13px;font-weight:800;color:#dc2626">${fmt(e.amount)} ${cur}</td>
+      <td style="padding:9px 13px;font-size:11px;color:#64748b">${e.note||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  const bodyHTMLexp = pdfCards([
+    {label:'إجمالي مصاريف الشهر', value:`${fmt(total)} ${cur}`, color:'red'},
+    {label:'عدد المصاريف', value:`${monthExpenses.length}`, color:'gray'},
+  ]) +
+  `<div class="pdf-section-title">📊 توزيع المصاريف حسب التصنيف</div>` +
+  catCards +
+  `<div class="pdf-section-title">📋 تفاصيل جميع المصاريف</div>` +
+  pdfTable(['التاريخ','الوصف','التصنيف','المبلغ','ملاحظة'], rows,
+    `<td colspan="3" style="padding:9px 13px">إجمالي الشهر</td><td style="padding:9px 13px;color:#dc2626">${fmt(total)} ${cur}</td><td></td>`);
+
+  const html = pdfPage('💸', `تقرير النثريات — ${now.toLocaleDateString('ar-EG',{month:'long',year:'numeric'})}`,
+    [`📅 ${now.toLocaleDateString('ar-EG')}`, `📋 ${monthExpenses.length} مصروف هذا الشهر`],
+    '', bodyHTMLexp, `إجمالي الشهر: ${fmt(total)} ${cur}`);
   printHTML(html, 'تقرير-النثريات');
 }
 
@@ -14436,7 +15264,7 @@ function generateCashierReport(){
       const surplus = h.stockSurplus||0;
       return `<tr>
         <td style="font-size:12px">${new Date(h.receiveTime||h.date).toLocaleDateString('ar')}</td>
-        <td style="font-weight:700">${h(h.cashierName)}</td>
+        <td style="font-weight:700">${h.cashierName||'—'}</td>
         <td style="font-size:12px;color:var(--accent)">${h.handoverNumber||('#'+h.id)||'-'}</td>
         <td style="font-weight:800;color:${deficit>0?'var(--danger)':'var(--text3)'}">
           ${deficit>0?'🔴 ('+fmt(deficit)+') '+cur:'—'}
@@ -14455,24 +15283,64 @@ function generateCashierReport(){
 }
 
 function exportCashierReportPDF(){
+  // تأكد من تحديث البيانات أولاً
   generateCashierReport();
+
   const cur = settings.currency||'ج.م';
   const from = document.getElementById('crFrom').value;
   const to = document.getElementById('crTo').value;
   const cashier = document.getElementById('crCashier').value || 'جميع الكاشير';
-  const summaryHTML = document.getElementById('crSummaryBody')?.innerHTML || '';
-  const html = `<div style="font-family:'Cairo',sans-serif;direction:rtl;padding:20px;color:#222">
-    <h2 style="text-align:center;margin-bottom:4px">تقرير فروقات الكاشير</h2>
-    <p style="text-align:center;color:#666;font-size:13px">الفترة: ${from} إلى ${to} | الكاشير: ${cashier}</p>
-    <p style="text-align:center;color:#666;font-size:12px">تاريخ الطباعة: ${new Date().toLocaleDateString('ar')}</p>
-    <hr style="margin:16px 0">
-    <table style="width:100%;border-collapse:collapse;font-size:13px">
-      <thead style="background:#f1f5f9">
-        <tr><th style="padding:8px;border:1px solid #ddd">الكاشير</th><th style="padding:8px;border:1px solid #ddd">الورديات</th><th style="padding:8px;border:1px solid #ddd">المبيعات</th><th style="padding:8px;border:1px solid #ddd">المتوقع</th><th style="padding:8px;border:1px solid #ddd">العجز</th><th style="padding:8px;border:1px solid #ddd">الزيادة</th><th style="padding:8px;border:1px solid #ddd">صافي الفرق</th><th style="padding:8px;border:1px solid #ddd">التقييم</th></tr>
-      </thead>
-      <tbody>${summaryHTML}</tbody>
-    </table>
-  </div>`;
+
+  // تحقق من وجود بيانات في crSummaryBody
+  const summaryBodyEl = document.getElementById('crSummaryBody');
+  if(!summaryBodyEl || !summaryBodyEl.innerHTML.trim()){
+    toast('لا توجد بيانات للتصدير — اضغط "عرض" أولاً', 'warning');
+    return;
+  }
+
+  // Pull live data from rendered crStats
+  const statsEl  = document.getElementById('crStats');
+  const statValues = statsEl ? [...statsEl.querySelectorAll('.stat-value')].map(e=>e.textContent.trim()) : [];
+  const totalShifts  = statValues[0]||'—';
+  const netVar       = statValues[1]||'—';
+  const totalSurplus = statValues[2]||'—';
+  const totalDeficit = statValues[3]||'—';
+
+  const cards = pdfCards([
+    {label:'عدد الورديات',     value:totalShifts,  color:'blue'},
+    {label:'صافي فرق الكاشير', value:netVar,        color:'gray'},
+    {label:'إجمالي الزيادة',   value:totalSurplus, color:'green'},
+    {label:'إجمالي العجوزات',  value:totalDeficit, color:'red'},
+  ]);
+
+  // Clean up summary table HTML (remove CSS vars, use inline colors)
+  const rawSummary = summaryBodyEl.innerHTML || '';
+  const cleanSummary = rawSummary
+    .replace(/var\(--accent3\)/g,'#16a34a')
+    .replace(/var\(--danger\)/g,'#dc2626')
+    .replace(/var\(--warning\)/g,'#d97706')
+    .replace(/var\(--text3\)/g,'#94a3b8')
+    .replace(/var\(--text\)/g,'#1e293b')
+    .replace(/class="badge[^"]*"/g, match => {
+      if(match.includes('success')) return 'style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#dcfce7;color:#16a34a"';
+      if(match.includes('danger'))  return 'style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#fee2e2;color:#dc2626"';
+      if(match.includes('warning')) return 'style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#fef9c3;color:#ca8a04"';
+      return match;
+    });
+
+  const bodyHTML = cards +
+    `<div class="pdf-section-title">👥 ملخص أداء الكاشير</div>` +
+    `<table class="pdf-table">
+      <thead><tr>
+        <th>الكاشير</th><th>الورديات</th><th>المبيعات</th><th>فرق الكاشير</th>
+        <th>عجز المخزن</th><th>الإجمالي</th><th>التقييم</th>
+      </tr></thead>
+      <tbody>${cleanSummary}</tbody>
+    </table>`;
+
+  const html = pdfPage('👥', 'تقرير فروقات الكاشير',
+    [`📅 من ${from||'البداية'} إلى ${to||'اليوم'}`, `👤 ${cashier}`],
+    '', bodyHTML);
   printHTML(html, 'تقرير-فروقات-الكاشير');
 }
 
@@ -16908,9 +17776,423 @@ function viewHandoverDetail(hid){
 // ─── ربط عمليات البيع بالعهدة ───────────────────────────────────────
 // يتم ذلك تلقائياً من خلال cashierId + receiveTime في كل تقرير
 
-init().then(() => {
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║            LICENSE GUARD — POS Pro v2                          ║
+// ║  يتحقق من الترخيص قبل تشغيل النظام                             ║
+// ║  Hardware-based fingerprint — يعمل على كل المتصفحات            ║
+// ╚══════════════════════════════════════════════════════════════════╝
+const LICENSE_GUARD = (() => {
+
+  // ── نفس المفاتيح الموجودة في برنامج الترخيص ──
+  const _C = (()=>{
+    const d = s => atob(s);
+    return {
+      K:  d('UE9TLVBSTy1MSUNFTlNFLUtFWS0yMDI2LVRBSEVSLVNFQ1VSRQ=='),
+      SL: d('UE9TLVNBTFQtMjAyNg=='),
+      IV: d('UE9TLUlWLTIwMjYtU0FGRQ=='),
+    };
+  })();
+
+  // ── Hardware-only fingerprint — نفس الكود في برنامج الترخيص ──
+  async function _getHardwareId() {
+    const gl = (()=>{
+      try {
+        const c=document.createElement('canvas'),g=c.getContext('webgl')||c.getContext('experimental-webgl');
+        if(!g) return 'NO_GL';
+        const d=g.getExtension('WEBGL_debug_renderer_info');
+        return d?(g.getParameter(d.UNMASKED_VENDOR_WEBGL)+'|'+g.getParameter(d.UNMASKED_RENDERER_WEBGL)):g.getParameter(g.RENDERER);
+      } catch(e){return'GL_ERR';}
+    })();
+    const c2d=(()=>{
+      try{
+        const c=document.createElement('canvas');c.width=280;c.height=60;
+        const x=c.getContext('2d');
+        x.font='bold 18px Arial';x.fillStyle='#e63';
+        x.fillText('HW-FP-POS-2026',10,35);
+        x.fillStyle='rgba(0,100,200,0.8)';x.fillRect(60,8,120,22);
+        x.font='11px monospace';x.fillStyle='#1a1';
+        x.fillText('GPU-RENDER-TEST',62,24);
+        return c.toDataURL('image/png').slice(-80);
+      }catch(e){return'C2D_ERR';}
+    })();
+    const comp=[
+      screen.width+'x'+screen.height,
+      screen.colorDepth+'',
+      (navigator.hardwareConcurrency||'')+'',
+      (navigator.deviceMemory||'')+'',
+      new Date().getTimezoneOffset()+'',
+      Intl.DateTimeFormat().resolvedOptions().timeZone||'',
+      gl,
+      c2d,
+      navigator.platform||'',
+      navigator.language||'',
+    ];
+    const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(comp.join('||')));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase().slice(0,32);
+  }
+
+  // ── فك التشفير ──
+  async function _deriveKey() {
+    const enc=new TextEncoder();
+    const raw=await crypto.subtle.importKey('raw',enc.encode(_C.K),{name:'PBKDF2'},false,['deriveKey']);
+    return crypto.subtle.deriveKey(
+      {name:'PBKDF2',salt:enc.encode(_C.SL),iterations:100000,hash:'SHA-256'},
+      raw,{name:'AES-GCM',length:256},false,['encrypt','decrypt']
+    );
+  }
+
+  async function _decrypt(b64) {
+    const key=await _deriveKey();
+    const bytes=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
+    const iv=bytes.slice(0,12), ct=bytes.slice(12);
+    const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ct);
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+
+  async function _sha(str) {
+    const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // ── شاشة الترخيص ──
+  function _showLicenseScreen(msg, isExpired=false, daysLeft=null) {
+    document.getElementById('loadingScreen').style.display = 'none';
+    const existing = document.getElementById('licenseScreen');
+    if(existing) existing.remove();
+    const div = document.createElement('div');
+    div.id = 'licenseScreen';
+    div.style.cssText='position:fixed;inset:0;background:#0d0f14;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:Cairo,Tahoma,sans-serif;direction:rtl';
+    const warningColor = isExpired ? '#ef4444' : '#f59e0b';
+    const icon = isExpired ? '🔒' : '⚠️';
+    div.innerHTML = `
+      <div style="background:#151820;border:2px solid ${warningColor};border-radius:24px;padding:48px 40px;max-width:520px;width:90%;text-align:center;box-shadow:0 0 60px rgba(0,0,0,0.6)">
+        <div style="font-size:64px;margin-bottom:16px">${icon}</div>
+        <h2 style="color:${warningColor};font-size:22px;font-weight:900;margin-bottom:12px">
+          ${isExpired ? 'انتهت صلاحية الترخيص' : 'النظام غير مرخّص'}
+        </h2>
+        <p style="color:#94a3b8;font-size:14px;line-height:1.8;margin-bottom:24px">${msg}</p>
+        ${daysLeft !== null && daysLeft > 0 ? `
+          <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:12px 20px;margin-bottom:20px">
+            <span style="color:#f59e0b;font-size:13px;font-weight:700">⏳ متبقي ${daysLeft} يوم على انتهاء الترخيص</span>
+          </div>` : ''}
+        <div style="background:#0d1117;border:1px solid #1e2a3a;border-radius:12px;padding:16px;margin-bottom:24px;text-align:right">
+          <p style="color:#475569;font-size:11px;margin-bottom:8px;font-weight:700">لتفعيل النظام:</p>
+          <p style="color:#64748b;font-size:12px;line-height:1.9">
+            ١. افتح برنامج <span style="color:#3b82f6;font-weight:700">create-license.html</span> على نفس الجهاز<br>
+            ٢. أنشئ ترخيصاً جديداً<br>
+            ٣. أعد تشغيل هذا البرنامج في <span style="color:#f59e0b;font-weight:700">نفس المتصفح</span> أو في أي متصفح آخر على نفس الجهاز
+          </p>
+        </div>
+        <button onclick="location.reload()" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);border:none;border-radius:12px;padding:14px 40px;color:#fff;font-family:Cairo,sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-left:10px">
+          🔄 إعادة المحاولة
+        </button>
+        <label style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px 24px;color:#94a3b8;font-family:Cairo,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:inline-block;margin-top:12px">
+          📂 تفعيل من ملف license.key
+          <input type="file" accept=".key,.txt" style="display:none" onchange="window._activateLicenseFile(this)">
+        </label>
+      </div>`;
+    document.body.appendChild(div);
+  }
+
+  // ════════════════════════════════════════════════
+  // ANTI TIME-TAMPER — كشف رجوع التاريخ للوراء
+  // ════════════════════════════════════════════════
+  const _TS_KEY   = 'pos_last_run_ts';
+  const _TS_KEY2  = 'pos_session_ref';
+  const _TS_KEY3  = 'pos_cache_tick';
+  const _CNT_KEY  = 'pos_run_count';
+  const _LOCK_KEY = 'pos_time_locked'; // قفل دائم لو اتكشف تلاعب
+
+  function _encodeTs(ts)  { return btoa(String(ts * 1.337 + 19820704)); }
+  function _decodeTs(str) {
+    try { return Math.round((parseFloat(atob(str)) - 19820704) / 1.337); }
+    catch(e) { return 0; }
+  }
+
+  function _saveTimestamp(ts) {
+    try {
+      const encoded = _encodeTs(ts);
+      localStorage.setItem(_TS_KEY,  encoded);
+      localStorage.setItem(_TS_KEY2, btoa(String(ts + 77777)));
+      localStorage.setItem(_TS_KEY3, btoa(String(ts * 2 - 13)));
+      const cnt = parseInt(localStorage.getItem(_CNT_KEY) || '0') + 1;
+      localStorage.setItem(_CNT_KEY, String(cnt));
+    } catch(e) {}
+  }
+
+  function _loadLastTimestamp() {
+    // نحاول نقرأ من 3 أماكن — ناخد الأكبر (الأحدث)
+    const candidates = [];
+    try {
+      const v1 = localStorage.getItem(_TS_KEY);
+      if (v1) candidates.push(_decodeTs(v1));
+    } catch(e) {}
+    try {
+      const v2 = localStorage.getItem(_TS_KEY2);
+      if (v2) candidates.push(Math.round(parseFloat(atob(v2)) - 77777));
+    } catch(e) {}
+    try {
+      const v3 = localStorage.getItem(_TS_KEY3);
+      if (v3) candidates.push(Math.round((parseFloat(atob(v3)) + 13) / 2));
+    } catch(e) {}
+
+    if (candidates.length === 0) return { ts: 0, missing: 0 };
+
+    // كم واحد ناقص؟ لو ناقص يبقى حد مسحهم
+    const missing = 3 - candidates.length;
+    const maxTs   = Math.max(...candidates);
+    return { ts: maxTs, missing };
+  }
+
+  function _checkTimeTamper(nowTs) {
+    // لو في قفل دائم من جلسة سابقة → امنع مباشرة
+    if (localStorage.getItem(_LOCK_KEY) === '1') return true;
+
+    const { ts: lastTs, missing } = _loadLastTimestamp();
+
+    // لو حذف بعض المفاتيح → مشبوه، نقفل
+    if (missing > 0 && lastTs > 0) {
+      localStorage.setItem(_LOCK_KEY, '1');
+      return true;
+    }
+
+    // أول مرة بالفعل (كل المفاتيح ناقصة) → تمام
+    if (lastTs === 0) return false;
+
+    // لو الوقت رجع للوراء أكتر من 60 ثانية → تلاعب
+    if (nowTs < lastTs - 60000) {
+      localStorage.setItem(_LOCK_KEY, '1');
+      return true;
+    }
+
+    return false;
+  }
+
+  // ════════════════════════════════════════════════
+  // LOCK SCREEN — شاشة القفل وهو شغال
+  // ════════════════════════════════════════════════
+  function _lockSystem(reason) {
+    // امسح كل localStorage الخاص بالترخيص عشان يضطر يجدد
+    localStorage.setItem(_LOCK_KEY, '1'); // قفل دائم
+
+    // غطّي كل الشاشة بقفل مش ممكن تتخلص منه
+    const lock = document.createElement('div');
+    lock.id = 'systemLock';
+    lock.style.cssText = [
+      'position:fixed','inset:0','background:#0d0f14',
+      'display:flex','align-items:center','justify-content:center',
+      'z-index:2147483647',  // أعلى z-index ممكن
+      'font-family:Cairo,Tahoma,sans-serif','direction:rtl',
+    ].join(';');
+
+    const msgs = {
+      EXPIRED:     { icon:'🔒', title:'انتهت صلاحية الترخيص', color:'#ef4444',
+                     body:'لقد انتهت مدة الترخيص الخاصة بك.<br>يرجى التواصل مع المورد لتجديد الترخيص.' },
+      TIME_TAMPER: { icon:'⛔', title:'تم اكتشاف تلاعب بالتاريخ', color:'#ef4444',
+                     body:'تم اكتشاف تعديل غير مصرح به على تاريخ الجهاز.<br>تم إيقاف النظام حمايةً للبيانات.' },
+    };
+    const m = msgs[reason] || msgs.EXPIRED;
+
+    lock.innerHTML = `
+      <div style="background:#151820;border:2px solid ${m.color};border-radius:24px;
+                  padding:52px 44px;max-width:500px;width:90%;text-align:center;
+                  box-shadow:0 0 80px rgba(239,68,68,0.2)">
+        <div style="font-size:72px;margin-bottom:16px">${m.icon}</div>
+        <h2 style="color:${m.color};font-size:22px;font-weight:900;margin-bottom:14px">${m.title}</h2>
+        <p style="color:#94a3b8;font-size:14px;line-height:1.9;margin-bottom:28px">${m.body}</p>
+        <div style="background:#0d1117;border:1px solid #1e2a3a;border-radius:12px;
+                    padding:16px;margin-bottom:28px;text-align:right">
+          <p style="color:#475569;font-size:11px;margin-bottom:8px;font-weight:700">لإعادة التفعيل:</p>
+          <p style="color:#64748b;font-size:12px;line-height:2">
+            ١. افتح <span style="color:#3b82f6;font-weight:700">create-license.html</span> على هذا الجهاز<br>
+            ٢. أنشئ ترخيصاً جديداً<br>
+            ٣. اضغط <strong style="color:#f59e0b">إعادة المحاولة</strong> أدناه
+          </p>
+        </div>
+        <button onclick="location.reload()"
+          style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);border:none;
+                 border-radius:12px;padding:14px 44px;color:#fff;
+                 font-family:Cairo,sans-serif;font-size:15px;font-weight:800;cursor:pointer">
+          🔄 إعادة المحاولة
+        </button>
+      </div>`;
+
+    document.body.appendChild(lock);
+
+    // امنع أي تفاعل مع العناصر خلف الشاشة
+    lock.addEventListener('keydown', e => e.stopPropagation());
+    lock.addEventListener('click',   e => { if(e.target !== lock.querySelector('button')) e.stopPropagation(); });
+  }
+
+  // ════════════════════════════════════════════════
+  // PERIODIC CHECK — فحص كل 60 ثانية وهو شغال
+  // ════════════════════════════════════════════════
+  function _startPeriodicCheck(licExpiryTs) {
+    const CHECK_INTERVAL = 60 * 1000; // كل 60 ثانية
+
+    const _tick = () => {
+      const nowTs = Date.now();
+
+      // فحص 1: رجوع التاريخ للوراء؟
+      if (_checkTimeTamper(nowTs)) {
+        _lockSystem('TIME_TAMPER');
+        return; // وقّف الـ interval
+      }
+
+      // فحص 2: انتهى الترخيص؟
+      if (nowTs > licExpiryTs) {
+        _lockSystem('EXPIRED');
+        return;
+      }
+
+      // كل شيء تمام — حدّث الـ timestamp المحفوظ
+      _saveTimestamp(nowTs);
+
+      // تحذير آخر 7 أيام — يظهر مرة كل يوم
+      const daysLeft = Math.ceil((licExpiryTs - nowTs) / (1000*60*60*24));
+      if (daysLeft <= 7) {
+        const lastWarnDay = localStorage.getItem('pos_warn_day') || '';
+        const today = new Date().toISOString().split('T')[0];
+        if (lastWarnDay !== today) {
+          localStorage.setItem('pos_warn_day', today);
+          const warn = document.createElement('div');
+          warn.style.cssText = [
+            'position:fixed','bottom:20px','left:50%',
+            'transform:translateX(-50%)',
+            'background:rgba(245,158,11,0.15)',
+            'border:1px solid rgba(245,158,11,0.5)',
+            'border-radius:12px','padding:13px 28px',
+            'color:#f59e0b','font-family:Cairo,sans-serif',
+            'font-size:13px','font-weight:700',
+            'z-index:9998','direction:rtl','text-align:center',
+            'box-shadow:0 4px 20px rgba(0,0,0,0.4)',
+          ].join(';');
+          warn.innerHTML = `⚠️ تنبيه: ينتهي الترخيص خلال <strong>${daysLeft}</strong> ${daysLeft===1?'يوم':'أيام'} — يرجى التجديد`;
+          document.body.appendChild(warn);
+          setTimeout(() => warn.remove(), 10000);
+        }
+      }
+
+      // جدوِل الدورة القادمة
+      setTimeout(_tick, CHECK_INTERVAL);
+    };
+
+    // ابدأ بعد 60 ثانية من التشغيل
+    setTimeout(_tick, CHECK_INTERVAL);
+  }
+
+  // ════════════════════════════════════════════════
+  // VERIFY — التحقق الرئيسي عند الفتح
+  // ════════════════════════════════════════════════
+  async function verify() {
+    const nowTs = Date.now();
+    const hwId  = await _getHardwareId();
+
+    // ── 1. هل فيه ترخيص؟ ──
+    const encrypted    = localStorage.getItem('pos_license_key');
+    const storedDevice = localStorage.getItem('pos_device_id');
+    if (!encrypted || !storedDevice) {
+      _showLicenseScreen('لم يتم العثور على ترخيص على هذا الجهاز.<br>يرجى تشغيل برنامج إنشاء الترخيص أولاً.', false);
+      throw new Error('NO_LICENSE');
+    }
+
+    // ── 2. فك التشفير ──
+    let lic;
+    try { lic = await _decrypt(encrypted); }
+    catch(e) {
+      _showLicenseScreen('ملف الترخيص تالف أو تم التلاعب به.<br>يرجى إنشاء ترخيص جديد.', true);
+      throw new Error('LICENSE_CORRUPT');
+    }
+
+    // ── 3. بصمة الجهاز ──
+    if (lic.device_id !== hwId) {
+      _showLicenseScreen('هذا الترخيص مخصص لجهاز مختلف.<br>لا يمكن نقل الترخيص بين الأجهزة.', true);
+      throw new Error('DEVICE_MISMATCH');
+    }
+
+    // ── 4. Integrity Hash ──
+    const expectedIntegrity = await _sha(`${lic.device_id}|${lic.created_at}|${lic.expiry_date}|FULL|${_C.IV}`);
+    if (lic.integrity !== expectedIntegrity) {
+      _showLicenseScreen('تم اكتشاف تلاعب في بيانات الترخيص.<br>يرجى إنشاء ترخيص جديد.', true);
+      throw new Error('LICENSE_TAMPERED');
+    }
+
+    // ── 5. كشف رجوع التاريخ ──
+    if (_checkTimeTamper(nowTs)) {
+      _showLicenseScreen(
+        '⛔ تم اكتشاف تعديل غير مصرح على تاريخ الجهاز.<br>النظام مقفول — يرجى التواصل مع صاحب النظام لإعادة التفعيل.',
+        true
+      );
+      localStorage.setItem(_LOCK_KEY, '1'); // قفل دائم حتى لو صحّح التاريخ
+      throw new Error('TIME_TAMPERED');
+    }
+
+    // ── 6. انتهاء الترخيص ──
+    if (nowTs > lic.expiry_ts) {
+      const expDate = new Date(lic.expiry_ts).toLocaleDateString('ar-EG');
+      _showLicenseScreen(
+        `انتهت صلاحية الترخيص بتاريخ <strong style="color:#ef4444">${expDate}</strong>.<br>يرجى تجديد الترخيص.`,
+        true
+      );
+      throw new Error('LICENSE_EXPIRED');
+    }
+
+    // ── 7. حفظ الـ timestamp الحالي (لكشف التلاعب مستقبلاً) ──
+    _saveTimestamp(nowTs);
+
+    // ── 8. حفظ الترخيص في المتصفح الحالي لو جديد ──
+    if (localStorage.getItem('pos_license_key') !== encrypted) {
+      localStorage.setItem('pos_license_key', encrypted);
+      localStorage.setItem('pos_device_id', lic.device_id);
+    }
+
+    // ── ✅ الترخيص صالح ──
+    const daysLeft = Math.ceil((lic.expiry_ts - nowTs) / (1000*60*60*24));
+    console.log(`✅ License valid — expires: ${lic.expiry_date} (${daysLeft} days left)`);
+
+    // ابدأ الفحص الدوري
+    _startPeriodicCheck(lic.expiry_ts);
+
+    return true;
+  }
+
+  return { verify };
+})();
+
+// ── تفعيل الترخيص من ملف (للمتصفحات الأخرى) ──
+window._activateLicenseFile = async function(input) {
+  const file = input.files[0];
+  if(!file) return;
+  try {
+    const text = await file.text();
+    const encrypted = text.trim();
+    // حاول تفك تشفيره
+    const _C2 = (()=>{ const d=s=>atob(s); return { K:d('UE9TLVBSTy1MSUNFTlNFLUtFWS0yMDI2LVRBSEVSLVNFQ1VSRQ=='), SL:d('UE9TLVNBTFQtMjAyNg==') }; })();
+    const enc2=new TextEncoder();
+    const raw2=await crypto.subtle.importKey('raw',enc2.encode(_C2.K),{name:'PBKDF2'},false,['deriveKey']);
+    const key2=await crypto.subtle.deriveKey({name:'PBKDF2',salt:enc2.encode(_C2.SL),iterations:100000,hash:'SHA-256'},raw2,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+    const bytes2=Uint8Array.from(atob(encrypted),c=>c.charCodeAt(0));
+    const iv2=bytes2.slice(0,12),ct2=bytes2.slice(12);
+    const plain2=await crypto.subtle.decrypt({name:'AES-GCM',iv:iv2},key2,ct2);
+    const lic2=JSON.parse(new TextDecoder().decode(plain2));
+    // حفظ في localStorage
+    localStorage.setItem('pos_license_key', encrypted);
+    localStorage.setItem('pos_device_id', lic2.device_id);
+    // إعادة تشغيل
+    location.reload();
+  } catch(e) {
+    alert('❌ ملف الترخيص غير صالح أو تالف\n' + e.message);
+  }
+};
+
+
+LICENSE_GUARD.verify().then(() => {
+  return init();
+}).then(() => {
   console.log('POS Arabic System v4 Ready');
 }).catch(err => {
+  if(['NO_LICENSE','LICENSE_EXPIRED','DEVICE_MISMATCH','LICENSE_CORRUPT','LICENSE_TAMPERED','TIME_TAMPERED'].includes(err.message)) return;
+  // خطأ في قاعدة البيانات (مش ترخيص)
   console.error('Init error:', err);
   document.getElementById('loadingScreen').style.display = 'none';
   const ls = document.getElementById('loginScreen');
