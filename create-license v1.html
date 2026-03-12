@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔐 مولّد التراخيص — POS Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;user-select:none}
+  body{
+    font-family:'Cairo',Tahoma,sans-serif;
+    background:linear-gradient(135deg,#0d0f14 0%,#0f1a2e 50%,#0d0f14 100%);
+    min-height:100vh;color:#f1f5f9;direction:rtl;
+    display:flex;align-items:center;justify-content:center;padding:20px;
+  }
+  .card{background:#151820;border:1px solid #2d3555;border-radius:20px;padding:40px;width:560px;max-width:100%;box-shadow:0 0 80px rgba(59,130,246,0.1)}
+  .header{text-align:center;margin-bottom:28px}
+  .header .icon{font-size:52px;margin-bottom:10px}
+  .header h1{font-size:22px;font-weight:900;color:#3b82f6}
+  .header p{font-size:13px;color:#64748b;margin-top:4px}
+  .fp-box{background:#0d1117;border:1px solid #1e2a3a;border-radius:12px;padding:14px;margin-bottom:20px}
+  .fp-title{font-size:11px;color:#64748b;margin-bottom:8px;font-weight:700}
+  .fp-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+  .fp-item{background:#1c2030;border-radius:7px;padding:6px 9px;display:flex;flex-direction:column;gap:2px}
+  .fp-item span:first-child{color:#475569;font-size:9px;font-weight:600}
+  .fp-item span:last-child{color:#e2e8f0;font-weight:700;word-break:break-all;font-size:10px}
+  .did-box{background:#0f1a2e;border:2px solid #3b82f6;border-radius:12px;padding:12px 16px;margin-bottom:20px;text-align:center}
+  .did-box label{font-size:10px;color:#64748b;display:block;margin-bottom:5px;font-weight:700}
+  .did-box .did{font-size:12px;color:#60a5fa;font-weight:900;letter-spacing:1px;word-break:break-all;font-family:monospace}
+  .form-group{margin-bottom:14px}
+  .form-group label{display:block;font-size:13px;color:#94a3b8;margin-bottom:6px;font-weight:600}
+  .input-wrap{position:relative}
+  .input-wrap input{width:100%;padding:11px 44px 11px 14px;background:#1c2030;border:1px solid #2d3555;border-radius:10px;color:#f1f5f9;font-family:'Cairo',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+  .input-wrap input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+  .input-wrap input[type=date]{color-scheme:dark;padding-right:14px}
+  .eye-btn{position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:17px;padding:4px}
+  .btn{width:100%;padding:13px;border:none;border-radius:12px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;margin-top:4px}
+  .btn-blue{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff}
+  .btn-blue:hover{background:linear-gradient(135deg,#60a5fa,#3b82f6);transform:translateY(-1px)}
+  .btn-green{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+  .btn-green:hover{background:linear-gradient(135deg,#34d399,#10b981);transform:translateY(-1px)}
+  .btn-gray{background:#1e293b;color:#94a3b8;border:1px solid #334155;font-size:13px}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+  .alert{padding:11px 14px;border-radius:10px;font-size:13px;margin-top:12px;display:none}
+  .alert-error{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:#fca5a5}
+  .alert-success{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);color:#6ee7b7;display:flex;align-items:flex-start;gap:8px}
+  .step{display:none}
+  .step.active{display:block}
+  .output-box{background:#0d1117;border:1px solid #1e3a2e;border-radius:10px;padding:12px;margin-bottom:10px}
+  .output-box label{font-size:10px;color:#64748b;display:block;margin-bottom:6px;font-weight:700}
+  .output-box textarea{width:100%;background:transparent;border:none;color:#4ade80;font-family:monospace;font-size:10px;outline:none;resize:none;word-break:break-all;line-height:1.6}
+  .divider{border:none;border-top:1px solid #1e2a3a;margin:18px 0}
+  .badge{display:flex;align-items:center;justify-content:center;gap:6px;font-size:10px;color:#374151;margin-top:18px}
+  .expiry-info{background:#1a1f35;border:1px solid #2d3555;border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+  .expiry-info .lbl{font-size:11px;color:#64748b;margin-bottom:2px}
+  .expiry-info .val{font-size:13px;color:#f59e0b;font-weight:800}
+  .days-btns{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap}
+  .day-btn{flex:1;min-width:70px;padding:9px 6px;border-radius:9px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;background:#1e293b;border:1px solid #334155;color:#94a3b8;transition:all .2s}
+  .day-btn.active{background:rgba(59,130,246,0.18);border-color:#3b82f6;color:#60a5fa}
+  .dots::after{content:'...';animation:dd 1.2s steps(3,end) infinite}
+  @keyframes dd{0%{content:'.'}33%{content:'..'}66%{content:'...'}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="icon">🔐</div>
+    <h1>مولّد تراخيص POS Pro</h1>
+    <p>لاستخدام صاحب النظام فقط</p>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step active" id="step1">
+    <div class="fp-box">
+      <div class="fp-title">📡 بصمة الجهاز — Device Fingerprint</div>
+      <div class="fp-grid" id="fpGrid">
+        <div class="fp-item"><span>الحالة</span><span>جاري القراءة<span class="dots"></span></span></div>
+      </div>
+    </div>
+    <div class="did-box">
+      <label>🔑 DEVICE ID</label>
+      <div class="did" id="deviceIdDisplay">جارٍ الحساب<span class="dots"></span></div>
+    </div>
+    <div class="form-group">
+      <label>🔒 كلمة مرور صاحب النظام</label>
+      <div class="input-wrap">
+        <input type="password" id="ownerPass" placeholder="أدخل كلمة المرور..." autocomplete="off"
+          onkeydown="if(event.key==='Enter')_checkPass()">
+        <button class="eye-btn" id="eyePass" onclick="_togglePass('ownerPass','eyePass')">👁️</button>
+      </div>
+    </div>
+    <button class="btn btn-blue" onclick="_checkPass()">التحقق ←</button>
+    <div class="alert alert-error" id="step1Err"></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" id="step2">
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:40px">🛡️</div>
+      <div style="font-size:15px;font-weight:800;color:#fbbf24;margin-top:8px">سؤال الأمان</div>
+    </div>
+    <div class="form-group">
+      <label style="font-size:14px;color:#f1f5f9;text-align:center;display:block;margin-bottom:12px">تاريخ ميلادك امتى؟</label>
+      <div class="input-wrap">
+        <input type="password" id="secAnswer" placeholder="الإجابة..." autocomplete="off"
+          onkeydown="if(event.key==='Enter')_checkSecurity()">
+        <button class="eye-btn" id="eyeSec" onclick="_togglePass('secAnswer','eyeSec')">👁️</button>
+      </div>
+    </div>
+    <button class="btn btn-blue" onclick="_checkSecurity()">متابعة ←</button>
+    <div class="alert alert-error" id="step2Err"></div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step" id="step3">
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:36px">✅</div>
+      <div style="font-size:14px;font-weight:800;color:#10b981;margin-top:6px">تم التحقق — حدد مدة الترخيص</div>
+    </div>
+    <div class="did-box" style="margin-bottom:16px">
+      <label>DEVICE ID للجهاز الحالي</label>
+      <div class="did" id="step3DeviceId" style="font-size:10px"></div>
+    </div>
+
+    <div class="form-group">
+      <label>📅 مدة الترخيص</label>
+      <div class="days-btns">
+        <button class="day-btn" onclick="_setDays(30,this)">30 يوم</button>
+        <button class="day-btn" onclick="_setDays(90,this)">3 أشهر</button>
+        <button class="day-btn" onclick="_setDays(180,this)">6 أشهر</button>
+        <button class="day-btn" onclick="_setDays(365,this)">سنة</button>
+      </div>
+      <div class="input-wrap">
+        <input type="date" id="expiryDate" onchange="_onDateChange()">
+      </div>
+    </div>
+
+    <!-- TEST MODE -->
+    <div style="background:#0d1117;border:1px dashed rgba(245,158,11,0.3);border-radius:12px;padding:14px;margin-bottom:14px">
+      <div style="font-size:11px;color:#f59e0b;font-weight:700;margin-bottom:10px">&#x1F9EA; وضع التيست &mdash; ترخيص بالدقائق</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="number" id="testMinutes" min="1" max="9999" placeholder="عدد الدقائق مثلاً: 2"
+          style="flex:1;padding:9px 14px;background:#1c2030;border:1px solid #2d3555;border-radius:9px;color:#f1f5f9;font-family:Cairo,sans-serif;font-size:14px;outline:none"
+          onkeydown="if(event.key==='Enter')_setMinutes()">
+        <button onclick="_setMinutes()"
+          style="padding:9px 18px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.45);border-radius:9px;color:#f59e0b;font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">&#x26A1; تطبيق</button>
+      </div>
+      <div style="font-size:10px;color:#475569;margin-top:7px">ينتهي الترخيص بعد الدقائق المحددة من وقت الإنشاء</div>
+    </div>
+
+    <div class="expiry-info" id="expiryInfo" style="display:none">
+      <div><div class="lbl">تاريخ الإنشاء</div><div class="val" id="infoCreated" style="color:#94a3b8;font-size:12px"></div></div>
+      <div style="text-align:center">
+        <div style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);border-radius:20px;padding:4px 14px;font-size:12px;color:#f59e0b;font-weight:700" id="infoDays"></div>
+      </div>
+      <div style="text-align:left"><div class="lbl">ينتهي في</div><div class="val" id="infoExpiry"></div></div>
+    </div>
+
+    <button class="btn btn-green" onclick="_generateLicense()" id="genBtn">⚡ إنشاء الترخيص</button>
+    <hr class="divider">
+
+    <div id="licenseOutput" style="display:none">
+      <div class="output-box">
+        <label>📄 license.key — احفظه في مجلد المشروع</label>
+        <textarea id="licenseKeyContent" rows="4" readonly></textarea>
+      </div>
+      <div class="output-box">
+        <label>📄 device.id — احفظه في مجلد المشروع</label>
+        <textarea id="deviceIdContent" rows="2" readonly></textarea>
+      </div>
+      <div class="alert alert-success" id="successMsg">
+        <span style="font-size:18px">✅</span>
+        <span>تم إنشاء الترخيص! احفظ الملفين في نفس مجلد المشروع ثم افتح التطبيق.</span>
+      </div>
+      <button class="btn btn-gray" onclick="_downloadFiles()" style="margin-top:10px">
+        💾 تحميل license.key و device.id
+      </button>
+    </div>
+  </div>
+
+  <div class="badge">🔒 AES-256-GCM · SHA-256 · PBKDF2 · Expiry · Anti-Time-Tamper</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// CONSTANTS
+// ══════════════════════════════════════════════════════════════
+const _C = (()=>{
+  const d = s => atob(s);
+  return {
+    K:  d('UE9TLVBSTy1MSUNFTlNFLUtFWS0yMDI2LVRBSEVSLVNFQ1VSRQ=='),
+    SL: d('UE9TLVNBTFQtMjAyNg=='),
+    IV: d('UE9TLUlWLTIwMjYtU0FGRQ=='),
+    P:  d('dGFoZXJAMTk5OQ=='),
+    Q:  d('YmFsYWh0YXJhaA==')
+  };
+})();
+
+let _deviceId = null;
+
+// ══════════════════════════════════════════════════════════════
+// FINGERPRINT
+// ══════════════════════════════════════════════════════════════
+async function _getFingerprint() {
+  const gl = (()=>{
+    try {
+      const c=document.createElement('canvas'),g=c.getContext('webgl')||c.getContext('experimental-webgl');
+      if(!g) return 'NO_GL';
+      const d=g.getExtension('WEBGL_debug_renderer_info');
+      return d?(g.getParameter(d.UNMASKED_VENDOR_WEBGL)+'|'+g.getParameter(d.UNMASKED_RENDERER_WEBGL)):g.getParameter(g.RENDERER);
+    } catch(e){return'GL_ERR';}
+  })();
+  const c2d=(()=>{
+    try{
+      const c=document.createElement('canvas');c.width=200;c.height=50;
+      const x=c.getContext('2d');x.font='14px Arial';x.fillStyle='#f60';
+      x.fillText('POS-FP-2026',10,30);x.fillStyle='#069';x.fillRect(50,5,80,20);
+      return c.toDataURL().slice(-60);
+    }catch(e){return'C2D_ERR';}
+  })();
+  const comp=[
+    navigator.platform||'', navigator.userAgent||'',
+    navigator.language||'', (navigator.languages||[]).join(','),
+    screen.width+'x'+screen.height, screen.colorDepth+'',
+    new Date().getTimezoneOffset()+'',
+    Intl.DateTimeFormat().resolvedOptions().timeZone||'',
+    (navigator.deviceMemory||'')+'', (navigator.hardwareConcurrency||'')+'',
+    gl, c2d, navigator.cookieEnabled+'',
+    (typeof navigator.maxTouchPoints!=='undefined'?navigator.maxTouchPoints:'')+'',
+  ];
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(comp.join('||')));
+  const id=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase().slice(0,32);
+  return {id, comp};
+}
+
+// ══════════════════════════════════════════════════════════════
+// CRYPTO
+// ══════════════════════════════════════════════════════════════
+async function _deriveKey() {
+  const enc=new TextEncoder();
+  const raw=await crypto.subtle.importKey('raw',enc.encode(_C.K),{name:'PBKDF2'},false,['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {name:'PBKDF2',salt:enc.encode(_C.SL),iterations:100000,hash:'SHA-256'},
+    raw,{name:'AES-GCM',length:256},false,['encrypt','decrypt']
+  );
+}
+
+async function _encrypt(obj) {
+  const key=await _deriveKey();
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(JSON.stringify(obj)));
+  const out=new Uint8Array(12+ct.byteLength);
+  out.set(iv);out.set(new Uint8Array(ct),12);
+  return btoa(String.fromCharCode(...out));
+}
+
+async function _sha(str) {
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// UI
+// ══════════════════════════════════════════════════════════════
+const LABELS=['نظام التشغيل','المتصفح','اللغة','اللغات','دقة الشاشة','عمق اللون',
+  'TZ Offset','المنطقة الزمنية','ذاكرة الجهاز','عدد الأنوية','GPU (WebGL)','Canvas FP','Cookies','Touch Points'];
+
+function _renderFP(fp) {
+  document.getElementById('fpGrid').innerHTML=fp.comp.map((v,i)=>`
+    <div class="fp-item">
+      <span>${LABELS[i]||'Info '+(i+1)}</span>
+      <span>${(v||'—').toString().slice(0,38)}</span>
+    </div>`).join('');
+  document.getElementById('deviceIdDisplay').textContent=fp.id;
+  document.getElementById('step3DeviceId').textContent=fp.id;
+}
+
+function _showStep(n) {
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+}
+
+function _togglePass(iId,bId) {
+  const i=document.getElementById(iId);
+  i.type=i.type==='password'?'text':'password';
+  document.getElementById(bId).textContent=i.type==='password'?'👁️':'🙈';
+  i.focus();
+}
+
+function _fmt(d) { return d instanceof Date ? d.toISOString().split('T')[0] : d; }
+
+function _setDays(days, btn) {
+  document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const today=new Date(), expiry=new Date(today);
+  expiry.setDate(expiry.getDate()+days);
+  document.getElementById('expiryDate').value=_fmt(expiry);
+  _updateExpiryInfo(_fmt(today), _fmt(expiry), days+' يوم');
+}
+
+function _onDateChange() {
+  const val=document.getElementById('expiryDate').value;
+  if(!val) return;
+  document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active'));
+  const today=new Date(), expiry=new Date(val);
+  const days=Math.round((expiry-today)/(1000*60*60*24));
+  _updateExpiryInfo(_fmt(today), val, days+' يوم');
+  window._testMinutes = null; // reset test mode
+}
+
+function _setMinutes() {
+  const mins = parseInt(document.getElementById('testMinutes').value, 10);
+  if (!mins || mins < 1) { alert('أدخل عدد دقائق صحيح'); return; }
+  window._testMinutes = mins;
+  document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('expiryDate').value = '';
+  const now = new Date();
+  const expiry = new Date(now.getTime() + mins * 60 * 1000);
+  _updateExpiryInfo(
+    now.toLocaleString('ar'),
+    expiry.toLocaleString('ar'),
+    '⏱️ ' + mins + ' دقيقة'
+  );
+}
+
+function _updateExpiryInfo(created, expiry, label) {
+  document.getElementById('expiryInfo').style.display='flex';
+  document.getElementById('infoCreated').textContent=created;
+  document.getElementById('infoDays').textContent=label;
+  document.getElementById('infoExpiry').textContent=expiry;
+}
+
+// ══════════════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════════════
+async function _checkPass() {
+  const val=document.getElementById('ownerPass').value.trim();
+  const err=document.getElementById('step1Err');
+  if(!val){err.textContent='الرجاء إدخال كلمة المرور';err.style.display='block';return;}
+  if(await _sha(val+'|POS-SALT-OWNER') !== await _sha(_C.P+'|POS-SALT-OWNER')){
+    err.textContent='❌ كلمة المرور غير صحيحة';err.style.display='block';
+    document.getElementById('ownerPass').value='';return;
+  }
+  err.style.display='none';
+  _showStep(2);
+  setTimeout(()=>document.getElementById('secAnswer').focus(),80);
+}
+
+async function _checkSecurity() {
+  const norm=s=>s.trim().replace(/\s+/g,'').toLowerCase();
+  const val=norm(document.getElementById('secAnswer').value);
+  const err=document.getElementById('step2Err');
+  if(!val){err.textContent='الرجاء إدخال الإجابة';err.style.display='block';return;}
+  if(await _sha(val+'|POS-SALT-OWNER') !== await _sha(norm(_C.Q)+'|POS-SALT-OWNER')){
+    err.textContent='❌ إجابة خاطئة';err.style.display='block';
+    document.getElementById('secAnswer').value='';return;
+  }
+  err.style.display='none';
+  _showStep(3);
+  // default: 90 days
+  _setDays(90, document.querySelectorAll('.day-btn')[1]);
+}
+
+// ══════════════════════════════════════════════════════════════
+// GENERATE
+// ══════════════════════════════════════════════════════════════
+async function _generateLicense() {
+  const testMins = window._testMinutes || null;
+  const expiryVal = document.getElementById('expiryDate').value;
+  if (!testMins && !expiryVal) { alert('الرجاء تحديد مدة الترخيص أو عدد الدقائق للتيست'); return; }
+  if (!_deviceId) { alert('جاري قراءة بصمة الجهاز، انتظر لحظة'); return; }
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.textContent = '⏳ جارٍ إنشاء الترخيص...';
+
+  try {
+    const nowTs    = Date.now();
+    const now      = new Date(nowTs);
+    const createdAt = now.toISOString().split('T')[0];
+
+    // حساب expiry_ts (timestamp دقيق لانتهاء الترخيص)
+    let expiryTs, finalExpiryDate;
+    if (testMins) {
+      expiryTs = nowTs + testMins * 60 * 1000;
+      finalExpiryDate = new Date(expiryTs).toISOString().split('T')[0];
+    } else {
+      finalExpiryDate = expiryVal;
+      const expDate = new Date(expiryVal); expDate.setHours(23, 59, 59, 999);
+      expiryTs = expDate.getTime();
+    }
+
+    // حساب integrity hash
+    const integrity = await _sha(`${_deviceId}|${createdAt}|${finalExpiryDate}|FULL|${_C.IV}`);
+
+    const licenseObj = {
+      device_id:    _deviceId,
+      created_at:   createdAt,
+      expiry_date:  finalExpiryDate,
+      expiry_ts:    expiryTs,    // timestamp دقيق — للتيست بالدقائق
+      test_mode:    testMins ? true : false,
+      license_type: 'FULL',
+      created_ts:   nowTs,
+      integrity:    integrity
+    };
+
+    const encrypted = await _encrypt(licenseObj);
+
+    // ── حذف الترخيص القديم أولاً ──
+    localStorage.removeItem('pos_license_key');
+    localStorage.removeItem('pos_device_id');
+    localStorage.removeItem('pos_last_run_ts');
+    localStorage.removeItem('pos_last_run_date');
+
+    // ── حفظ الترخيص الجديد ──
+    localStorage.setItem('pos_license_key', encrypted);
+    localStorage.setItem('pos_device_id', _deviceId);
+
+    document.getElementById('licenseKeyContent').value = encrypted;
+    document.getElementById('deviceIdContent').value   = _deviceId;
+    document.getElementById('licenseOutput').style.display = 'block';
+    document.getElementById('successMsg').style.display    = 'flex';
+
+    btn.textContent     = '✅ تم إنشاء الترخيص';
+    btn.style.background= 'linear-gradient(135deg,#4ade80,#16a34a)';
+    document.getElementById('licenseOutput').scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  } catch(e) {
+    btn.disabled=false; btn.textContent='⚡ إنشاء الترخيص';
+    alert('خطأ: '+e.message);
+  }
+}
+
+function _downloadFiles() {
+  const key=document.getElementById('licenseKeyContent').value;
+  const did=document.getElementById('deviceIdContent').value;
+  if(!key||!did){alert('أنشئ الترخيص أولاً');return;}
+  const dl=(c,n)=>{const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(c);a.download=n;document.body.appendChild(a);a.click();a.remove();};
+  dl(key,'license.key');
+  setTimeout(()=>dl(did,'device.id'),400);
+}
+
+// ══════════════════════════════════════════════════════════════
+// SECURITY
+// ══════════════════════════════════════════════════════════════
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key.toUpperCase()))||(e.ctrlKey&&e.key.toUpperCase()==='U'))
+  {e.preventDefault();return false;}
+});
+setInterval(()=>{
+  if(window.outerWidth-window.innerWidth>160||window.outerHeight-window.innerHeight>160)
+    document.body.innerHTML='<div style="height:100vh;display:flex;align-items:center;justify-content:center;color:#ef4444;font-family:Cairo,sans-serif;font-size:18px;direction:rtl">⛔ هذه الصفحة لا تدعم فتح أدوات المطور</div>';
+},1000);
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+(async function(){
+  const fp=await _getFingerprint();
+  _deviceId=fp.id;
+  _renderFP(fp);
+  document.getElementById('ownerPass').focus();
+})();
+</script>
+</body>
+</html>
