@@ -568,11 +568,15 @@ body.kiosk .main-content > *{padding-right:calc(180px + 20px)!important}
   background:var(--surface);
   border:1px solid var(--border);
   border-radius:20px;
-  padding:28px;
+  padding:22px;
   width:90%;max-width:600px;
   max-height:90vh;
   overflow-y:auto;
   box-shadow:var(--shadow);
+}
+#paymentModal .modal{
+  max-width:400px;
+  padding:18px;
 }
 .modal-lg{max-width:800px}
 .modal-xl{max-width:1100px}
@@ -675,7 +679,7 @@ body.kiosk .main-content > *{padding-right:calc(180px + 20px)!important}
 .form-group-inline{display:flex;gap:8px;align-items:end}
 
 /* PAYMENT MODAL */
-.payment-methods{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.payment-methods{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .pay-method-btn{
   padding:10px 18px;
   border-radius:10px;
@@ -688,17 +692,17 @@ body.kiosk .main-content > *{padding-right:calc(180px + 20px)!important}
 }
 .pay-method-btn.active{border-color:var(--accent);background:rgba(245,158,11,0.1);color:var(--accent)}
 .numpad{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
-  margin-top:16px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+  margin-top:10px;
 }
 .num-btn{
-  padding:16px;
+  padding:11px;
   background:var(--surface3);
   border:1px solid var(--border);
   border-radius:10px;
   color:var(--text);
   font-family:'Cairo',sans-serif;
-  font-size:18px;font-weight:700;
+  font-size:16px;font-weight:700;
   cursor:pointer;transition:all .15s;
   border:none;
 }
@@ -708,22 +712,22 @@ body.kiosk .main-content > *{padding-right:calc(180px + 20px)!important}
   background:var(--surface2);
   border:2px solid var(--accent);
   border-radius:12px;
-  padding:16px;
+  padding:10px 16px;
   text-align:center;
-  font-size:32px;font-weight:900;
+  font-size:26px;font-weight:900;
   color:var(--accent);
-  margin-bottom:8px;
+  margin-bottom:6px;
   letter-spacing:2px;
 }
 .change-display{
   background:var(--surface2);
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:12px;
+  border-radius:10px;
+  padding:8px 12px;
   text-align:center;
-  font-size:16px;font-weight:700;
+  font-size:14px;font-weight:700;
   color:var(--accent3);
-  margin-bottom:16px;
+  margin-bottom:10px;
 }
 
 /* RECEIPT */
@@ -4422,9 +4426,9 @@ const SANITIZE = (() => {
     if(!obj || typeof obj !== 'object') return obj;
     const clean = {};
     // الحقول المسموح بها والأنواع المتوقعة
-    for(const [key, val] of Object.entries(obj)){
+    for(const [key, val] of Object.entries(Object.assign(Object.create(null), obj))){
       // منع prototype pollution
-      if(key === '__proto__' || key === 'constructor' || key === 'prototype') continue;
+      if(key === '__proto__' || key === 'constructor' || key === 'prototype' || key.startsWith('__')) continue;
       // منع حقن دوال
       if(typeof val === 'function') continue;
       if(typeof val === 'string'){
@@ -4487,13 +4491,16 @@ const SANITIZE = (() => {
     meta.httpEquiv = 'Content-Security-Policy';
     meta.content = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com",
+      "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
-      "font-src 'self' https://fonts.gstatic.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob:",
-      "connect-src 'self'",
+      "media-src 'self' blob: data:",
+      "connect-src 'self' blob:",
       "object-src 'none'",
-      "base-uri 'self'"
+      "frame-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'"
     ].join('; ');
     document.head.prepend(meta);
   }
@@ -5037,11 +5044,42 @@ async function _autoTrimAuditLog(){
 // ============================================================
 // AUTH
 // ============================================================
+// ─── Brute Force Protection ──────────────────────────────
+const _loginGuard = (() => {
+  const MAX_ATTEMPTS = 5;
+  const LOCK_MS = 30000; // 30 ثانية قفل
+  let attempts = 0;
+  let lockedUntil = 0;
+  return {
+    check() {
+      if(Date.now() < lockedUntil) {
+        const secs = Math.ceil((lockedUntil - Date.now()) / 1000);
+        toast(`🔒 تم قفل الدخول لمدة ${secs} ثانية بسبب محاولات متكررة`, 'error');
+        return false;
+      }
+      return true;
+    },
+    fail() {
+      attempts++;
+      if(attempts >= MAX_ATTEMPTS) {
+        lockedUntil = Date.now() + LOCK_MS;
+        attempts = 0;
+        toast(`🔒 تم قفل الدخول ${LOCK_MS/1000} ثانية`, 'error');
+        // Log to audit
+        if(typeof addAuditLog==='function') addAuditLog('security','🔒','محاولات دخول متكررة — تم القفل','النظام');
+      }
+    },
+    reset() { attempts = 0; lockedUntil = 0; }
+  };
+})();
+
 function doLogin(){
+  if(!_loginGuard.check()) return;
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
   const user = allUsers.find(x => x.username === u && x.password === p && x.active);
-  if(!user){ toast('❌ اسم المستخدم أو كلمة المرور غير صحيحة','error'); return; }
+  if(!user){ toast('❌ اسم المستخدم أو كلمة المرور غير صحيحة','error'); _loginGuard.fail(); return; }
+  _loginGuard.reset();
   currentUser = user;
   user.lastLogin = new Date().toISOString();
   dbPut('users', user);
@@ -5563,7 +5601,7 @@ function filterProducts(){
     card.innerHTML = `
       ${isLow?`<span class="stock-badge low">منخفض</span>`:''}
       ${isOut?`<span class="stock-badge out">نفد</span>`:''}
-      <div class="product-icon">${p.icon||'📦'}</div>
+      <div class="product-icon">${h(p.icon)||'📦'}</div>
       <div class="product-name">${h(p.name)}</div>
       <div class="product-price">${fmt(p.price)} ${settings.currency||'ريال'}</div>
       <div class="product-stock">المخزون: ${p.stock}</div>
@@ -5646,7 +5684,7 @@ function renderCart(){
     return `
     <div class="cart-item">
       <div class="cart-item-top">
-        <span class="cart-item-name">${item.icon} ${h(item.name)}</span>
+        <span class="cart-item-name">${h(item.icon)||''} ${h(item.name)}</span>
         <span class="cart-item-total">${fmt(lineTotal)}</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
@@ -6447,9 +6485,9 @@ function renderInventory(){
     const isLow = p.stock <= p.minStock && p.stock > 0;
     const isOut = p.stock <= 0;
     return `<tr>
-      <td><span style="font-size:16px">${p.icon||'📦'}</span> ${h(p.name)}</td>
-      <td style="font-size:12px;color:var(--text3)">${p.sku||'-'}</td>
-      <td>${cat?.name||'-'}</td>
+      <td><span style="font-size:16px">${h(p.icon)||'📦'}</span> ${h(p.name)}</td>
+      <td style="font-size:12px;color:var(--text3)">${h(p.sku)||'-'}</td>
+      <td>${h(cat?.name)||'-'}</td>
       <td>${fmt(p.cost||0)}</td>
       <td style="font-weight:700;color:var(--accent)">${fmt(p.price)}</td>
       <td>
@@ -6473,7 +6511,7 @@ function renderCategories(){
   if(!el) return;
   el.innerHTML = allCategories.map(c => `
     <div style="display:flex;align-items:center;gap:6px;background:var(--surface2);padding:6px 12px;border-radius:8px;border:1px solid var(--border)">
-      <span>${c.icon||'🏷️'}</span>
+      <span>${h(c.icon)||'🏷️'}</span>
       <span style="font-size:13px;font-weight:600">${h(c.name)}</span>
       <button class="btn btn-secondary btn-xs" onclick="editCategory(${c.id})">✏️</button>
       <button class="btn btn-danger btn-xs" onclick="deleteCategory(${c.id})">×</button>
@@ -6686,7 +6724,7 @@ let quickPayMethod = 'cash';
 function renderCartCustomers(){
   const sel = document.getElementById('cartCustomer');
   sel.innerHTML = '<option value="">⚠️ اختر العميل (إلزامي) *</option>' +
-    allCustomers.map(c => `<option value="${c.id}">${h(c.name)}${c.phone?' - '+c.phone:''}</option>`).join('');
+    allCustomers.map(c => `<option value="${c.id}">${h(c.name)}${c.phone?' - '+h(c.phone):''}</option>`).join('');
 }
 
 function onCartCustomerChange(){
@@ -6719,7 +6757,7 @@ function renderCustomers(){
     const isActive = currentPanelCustomerId && String(c.id)===String(currentPanelCustomerId);
     return `<tr onclick="openCustPanel(${c.id})" style="cursor:pointer;transition:background .15s;${isActive?'background:rgba(124,58,237,0.08);':''}" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background='${isActive?'rgba(124,58,237,0.08)':''}'"  >
       <td style="font-weight:700;color:${isActive?'#a78bfa':'var(--text)'}">${h(c.name)}</td>
-      <td style="color:var(--text3);font-size:13px">${c.phone||'-'}</td>
+      <td style="color:var(--text3);font-size:13px">${h(c.phone)||'-'}</td>
       <td>
         <span style="padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;
           ${debt>0 ? 'background:rgba(239,68,68,0.12);color:var(--danger)' : 'background:rgba(16,185,129,0.12);color:var(--accent3)'}">
@@ -7054,7 +7092,7 @@ function refreshCustPanel(){
     const paidInfo = (m.kind==='sale' && (m.method==='partial'||m.method==='partial_card') && m.debtRemaining!=null)
       ? `<div style="font-size:9px;color:var(--accent3);margin-top:1px">دفع: ${fmt(m.paidAmt)} | آجل: ${fmt(m.debtRemaining)}</div>` : '';
     const refNote = m.kind==='refund' && m.origInv
-      ? `<div style="font-size:10px;color:var(--danger);margin-top:1px">من فاتورة: ${m.origInv}${m.reason?' | '+m.reason:''}</div>` : '';
+      ? `<div style="font-size:10px;color:var(--danger);margin-top:1px">من فاتورة: ${m.origInv}${m.reason?' | '+h(m.reason):''}</div>` : '';
 
     return `<div onclick="${
       m.kind==='sale'    ? `showSaleDetail(${m.saleId})` :
@@ -7072,7 +7110,7 @@ function refreshCustPanel(){
           ${m.kind!=='payment'?`<span style="font-size:9px;color:var(--text3);margin-right:4px">↗ للتفاصيل</span>`:''}
         </div>
         <div style="font-size:11px;color:var(--text3);margin-bottom:1px">${timeStr} - ${dateStr}</div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:1px">${m.cashierName||''}</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:1px">${h(m.cashierName)||''}</div>
         <div style="font-size:11px;color:var(--text3)">رقم: ${h(m.invNumber)}</div>
         ${m.kind==='payment' && m.phone ? `<div style="font-size:11px;color:var(--accent2);margin-top:2px;font-weight:700">📱 ${h(m.phone)}</div>` : ''}
         ${m.kind==='payment' && m.note ? `<div style="font-size:11px;color:var(--text3);margin-top:1px">📝 ${h(m.note)}</div>` : ''}
@@ -7193,8 +7231,8 @@ function renderSuppliers(){
         <div style="font-size:11px;color:var(--accent);margin-top:1px">${fmt(total)} ${settings.currency||'ج.م'}</div>
         ${sDebt>0?`<div style="font-size:11px;color:var(--danger);font-weight:700">⚠️ دين: ${fmt(sDebt)} ${settings.currency||'ج.م'}</div>`:''}
       </td>
-      <td style="color:var(--text2)">${s.phone||'-'}</td>
-      <td style="font-size:12px;color:var(--text3)">${s.address||'-'}</td>
+      <td style="color:var(--text2)">${h(s.phone)||'-'}</td>
+      <td style="font-size:12px;color:var(--text3)">${h(s.address)||'-'}</td>
       <td><div style="display:flex;gap:4px;flex-wrap:wrap" onclick="event.stopPropagation()">
         ${sDebt>0?`<button class="btn btn-success btn-xs" onclick="openSuppDirectPay(${s.id})" title="سداد الدين">💰</button>`:''}
         <button class="btn btn-secondary btn-xs" onclick="editSupplier(${s.id})">✏️</button>
@@ -7294,7 +7332,7 @@ function openSuppPanel(sid){
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center">
             <span style="font-size:11px;color:var(--text3)">${dateStr} · ${d.purchaseNumber}</span>
-            <span style="font-size:10px;color:var(--text3)">${d.reason||''}</span>
+            <span style="font-size:10px;color:var(--text3)">${h(d.reason)||''}</span>
           </div>
         </div>`;
       } else {
@@ -9091,7 +9129,7 @@ function showReportDetail(type){
         <thead><tr><th>المنتج</th><th>الكود</th><th>المخزون الحالي</th><th>الحد الأدنى</th><th>الفرق</th><th>سعر البيع</th></tr></thead>
         <tbody>${lowStock.map(p=>`<tr>
           <td style="font-weight:700">${h(p.name)}</td>
-          <td style="font-size:12px;color:var(--text3)">${p.sku||'-'}</td>
+          <td style="font-size:12px;color:var(--text3)">${h(p.sku)||'-'}</td>
           <td style="color:var(--danger);font-weight:800;text-align:center">${p.stock}</td>
           <td style="text-align:center">${p.minStock}</td>
           <td style="color:var(--warning);text-align:center">${p.stock-p.minStock}</td>
@@ -9540,7 +9578,7 @@ async function openShift(){
       document.getElementById('shiftHandoverNet').textContent     = fmt(drawerNet);
       document.getElementById('shiftHandoverTotal').textContent   = fmt(drawerCash + drawerNet);
       document.getElementById('shiftHandoverCur').textContent     = cur;
-      document.getElementById('shiftHandoverPrevCashier').innerHTML = `الكاشير السابق: <strong style="color:var(--accent)">${lastShift.cashierName || '-'}</strong>`;
+      document.getElementById('shiftHandoverPrevCashier').innerHTML = `الكاشير السابق: <strong style="color:var(--accent)">${h(lastShift.cashierName) || '-'}</strong>`;
       document.getElementById('shiftHandoverNewCashier').textContent = currentUser.name;
       document.getElementById('shiftHandoverPwd').value = '';
       document.getElementById('shiftHandoverPwdErr').style.display = 'none';
@@ -10839,8 +10877,8 @@ function renderPriceList(){
     const priceWithTax = p.price + taxAmt;
     return `<tr>
       <td style="color:var(--text3);font-size:12px">${i+1}</td>
-      <td style="font-weight:700">${p.icon||'📦'} ${h(p.name)}</td>
-      <td style="font-size:12px;color:var(--text3)">${p.sku||'-'}</td>
+      <td style="font-weight:700">${h(p.icon)||'📦'} ${h(p.name)}</td>
+      <td style="font-size:12px;color:var(--text3)">${h(p.sku)||'-'}</td>
       <td><span style="background:rgba(99,102,241,0.15);color:#a5b4fc;padding:2px 8px;border-radius:10px;font-size:11px">${cat?.name||'—'}</span></td>
       <td style="font-weight:800;color:var(--accent);font-size:15px">${fmt(p.price)} <span style="font-size:11px;font-weight:400">${cur}</span></td>
       <td style="font-size:12px;color:var(--text2)">${p.taxRate||0}%</td>
@@ -13245,7 +13283,7 @@ async function renderStockAnalytics(){
 
   const stagnantBody = document.getElementById('stagnantBody');
   if(stagnantBody) stagnantBody.innerHTML = stagnant.slice(0,50).map(({p,ls,daysSince})=>`<tr>
-    <td style="font-weight:600">${p.icon||'📦'} ${h(p.name)}</td>
+    <td style="font-weight:600">${h(p.icon)||'📦'} ${h(p.name)}</td>
     <td style="color:var(--warning);font-weight:700">${p.stock}</td>
     <td style="color:var(--text3);font-size:11px">${p.addedAt ? new Date(p.addedAt).toLocaleDateString('ar') : '—'}</td>
     <td style="color:var(--text2)">${ls ? new Date(ls).toLocaleDateString('ar') : '<span style="color:var(--danger)">لا يوجد</span>'}</td>
@@ -13385,9 +13423,9 @@ function renderStockCount(){
     if(stockCountData[p.id] === undefined) stockCountData[p.id] = p.stock;
     const cat = allCategories.find(c=>c.id===p.categoryId);
     return `<tr>
-      <td style="font-weight:700">${p.icon||'📦'} ${h(p.name)}</td>
-      <td style="font-size:12px;color:var(--text3)">${p.sku||'-'}</td>
-      <td>${cat?.name||'-'}</td>
+      <td style="font-weight:700">${h(p.icon)||'📦'} ${h(p.name)}</td>
+      <td style="font-size:12px;color:var(--text3)">${h(p.sku)||'-'}</td>
+      <td>${h(cat?.name)||'-'}</td>
       <td style="font-weight:700;color:var(--accent)">${p.stock}</td>
       <td><input type="number" class="discount-input" style="width:80px" id="sc_${p.id}" value="${p.stock}" min="0" oninput="updateStockCountDiff(${p.id})"></td>
       <td id="scdiff_${p.id}"><span class="count-diff-zero">0</span></td>
@@ -13476,7 +13514,7 @@ function exportStockCountPDF(){
         : `<span class="pdf-badge badge-danger">▼ نقص</span>`;
     return `<tr style="${bg}">
       <td style="padding:9px 13px;font-weight:600">${h(p.name)}</td>
-      <td style="padding:9px 13px;font-size:11px;color:#64748b">${p.sku||'—'}</td>
+      <td style="padding:9px 13px;font-size:11px;color:#64748b">${h(p.sku)||'—'}</td>
       <td style="padding:9px 13px">${p.stock}</td>
       <td style="padding:9px 13px;font-weight:700">${p.actual}</td>
       <td style="padding:9px 13px;font-weight:800;color:${dColor}">${p.diff>0?'+':''}${p.diff}</td>
@@ -15567,6 +15605,7 @@ function displayMonthlyReport(report, saved=false){
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         ${!saved?`<button class="btn btn-success btn-sm" onclick="saveMonthlyClose()">💾 حفظ التقفيل</button>`:'<span style="background:rgba(16,185,129,0.15);color:var(--accent3);padding:4px 12px;border-radius:8px;font-size:12px;font-weight:700">✅ محفوظ</span>'}
         <button class="btn btn-secondary btn-sm" onclick="printMonthlyReport()">🖨️ طباعة</button>
+        <button onclick="document.getElementById('mcReportDisplay').innerHTML='<div style=\\'text-align:center;padding:60px 20px;color:var(--text3)\\'><div style=\\'font-size:56px;margin-bottom:16px\\'>📅</div><div style=\\'font-size:16px;font-weight:700;margin-bottom:8px\\'>لا يوجد تقرير للعرض</div><div style=\\'font-size:13px\\'>اختر شهر واضغط &quot;حساب التقرير&quot; لعرض البيانات</div></div>'" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);color:var(--danger);width:32px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;font-size:16px;border-radius:8px;cursor:pointer;flex-shrink:0;font-family:'Cairo',sans-serif" title="إغلاق التقرير">✕</button>
       </div>
     </div>
 
@@ -16981,11 +17020,17 @@ function updateResetCounter(){
   if(checked.length === 0){
     el.innerHTML = '<span style="color:var(--text3)">لم يتم تحديد أي عنصر</span>';
   } else {
-    el.innerHTML = `<span style="color:var(--danger);font-weight:700">سيتم تصفير (${checked.length}):</span> <span style="color:var(--text2)">${labels.join(' · ')}</span>`;
+    el.innerHTML = `<span style="color:var(--danger);font-weight:700">سيتم تصفير (${checked.length}):</span> <span style="color:var(--text2)">${labels.map(l=>h(l)).join(' · ')}</span>`;
   }
 }
 
 async function executeResetData(){
+  // Security: only admin/manager can call this — even from console
+  if(!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'manager')){
+    toast('⛔ غير مصرح — هذه العملية للمدير فقط','error');
+    if(typeof addAuditLog==='function') addAuditLog('security','⛔','محاولة تصفير البيانات بدون صلاحية',currentUser?.name||'مجهول');
+    return;
+  }
   const pass = document.getElementById('resetAdminPass').value;
   if(!pass){ toast('أدخل كلمة مرور المدير','error'); return; }
   const adminUser = allUsers.find(u=>(u.role==='admin'||u.role==='manager') && u.password===pass && u.id===currentUser.id);
